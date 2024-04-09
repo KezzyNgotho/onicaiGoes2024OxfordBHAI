@@ -1,9 +1,9 @@
 <script>
-	import SelectionStep from './Steps/SelectionStep.svelte';
-	import InfoStep from './Steps/InfoStep.svelte';
-	import CreateModelStep from './Steps/CreateModelStep.svelte';
-	import ModelConfirmationStep from './Steps/ModelConfirmationStep.svelte';
-	import ChatUserInterfaceStep from './Steps/ChatUserInterfaceStep.svelte';
+	import SelectionStep from './Steps/Selection/SelectionStep.svelte';
+	import InfoStep from './Steps/Info/InfoStep.svelte';
+	import CreateModelStep from './Steps/CreateModel/CreateModelStep.svelte';
+	import ModelConfirmationStep from './Steps/ModelConfirmation/ModelConfirmationStep.svelte';
+	import ChatUserInterfaceStep from './Steps/ChatUserInterface/ChatUserInterfaceStep.svelte';
 
 	export let active_step;
 	

@@ -64,6 +64,11 @@ export let currentAiCreationObject = writable({
   },
 });
 
+// Global variable to access generally available LLM as model types
+export let supportedAiModelTypes = writable(
+  ["#Llama2_260K", "#Llama2_15M"]
+);
+
 // Global variable to access generally available currencies as payment types
 export let supportedPaymentTypes = writable(
   ["BTC", "ckBTC"]

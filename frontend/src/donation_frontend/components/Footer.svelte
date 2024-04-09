@@ -14,7 +14,7 @@
   <div>
     <p class="text-gray-500 dark:text-gray-400 mb-2 mt-12"><sup>*</sup>developed for 
       <a href='https://knowledgefound.org/token.html' target='_blank' rel="noreferrer" class='underline'>Knowledge Foundation</a>
-      at <a href='https://summit.immersiveeducation.org/SouthAfrica/2024/hackathon.html' target='_blank' rel="noreferrer" class='underline'>2024 SOUTH AFRICAN BLOCKCHAIN Hackathon</a>
+      at <a href='https://summit.immersiveeducation.org/SouthAfrica/2024/hackathon.html' target='_blank' rel="noreferrer" class='underline'>2024 OXFORD BLOCKCHAIN Hackathon</a>
       by <a href='https://github.com/patnorris/onicaiGoes2024SABH' target='_blank' rel="noreferrer" class='underline'>Arjaan Buijk & Patrick Friedrich</a>
       and hosted on <a href='https://internetcomputer.org/' target='_blank' rel="noreferrer" class='underline dark:hover:text-blue-300'>Internet Computer</a></p>
     <p class="text-4xl text-gray-700 dark:text-gray-200 mt-0 mb-12">Want to be the first to hear about updates?</p>
