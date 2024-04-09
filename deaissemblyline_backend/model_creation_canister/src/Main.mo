@@ -151,6 +151,21 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
         };
     };
 
+// Admin function to upload control canister wasm
+    private stable var controlCanisterWasm : [Nat8] = [];
+
+    public shared (msg) func upload_control_wasm_bytes_chunk(bytesChunk: [Nat8]) : async Types.FileUploadResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        controlCanisterWasm := Array.append<Nat8>(controlCanisterWasm, bytesChunk);
+
+        return #Ok({creationResult = "Success"});
+    };
+
+    let chunkSize = 1 / 2 * 1024 * 1024; // 0.5 MB
+
 // Spin up a new canister with an AI model running in it as specified by the input parameters
     public shared (msg) func createCanister(configurationInput : Types.ModelConfiguration) : async Types.ModelCreationResult {
         // Only backend canister may call this
@@ -160,6 +175,7 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
         switch(getModelCreationArtefacts(configurationInput.selectedModel)) {
             case (?creationArtefacts) {
+                // Create LLM canister
                 Cycles.add(300_000_000_000);
 
                 let create_canister = await IC0.create_canister({
@@ -178,15 +194,62 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                     canister_id = create_canister.canister_id;
                 });
 
-                // TODO: upload files (model and tokenizer)
+                // Upload files (model and tokenizer)
+                let modelCanister = actor (Principal.toText(create_canister.canister_id)) : actor {
+                    health: ()                               -> async Bool;
+                    ready: ()                                -> async Bool;
+                    reset_model: ()                          -> async Types.StatusCodeResult;
+                    reset_tokenizer: ()                      -> async Types.StatusCodeResult;
+                    upload_model_bytes_chunk: ([Nat8])     -> async Types.StatusCodeResult;
+                    upload_tokenizer_bytes_chunk: ([Nat8]) -> async Types.StatusCodeResult;
+                    initialize: ()                           -> async Types.StatusCodeResult;
+                };
 
+                // TODO: chunk
+                let uploadTokenizerResult = await modelCanister.upload_tokenizer_bytes_chunk(creationArtefacts.tokenizer);
+                let uploadModelResult = await modelCanister.upload_model_bytes_chunk(creationArtefacts.modelWeights);
 
-                // TODO: initialize and check with call to ready
+                // Initialize and check with call to ready
+                let initializeResult = await modelCanister.initialize();
+                let readyResult = await modelCanister.ready();
 
+                if (not readyResult) {
+                    return #Err(#Other("Creation failed."));
+                };
+
+                // Create control canister
+                Cycles.add(300_000_000_000);
+
+                let createControlCanister = await IC0.create_canister({
+                    settings = ?{
+                        freezing_threshold = null;
+                        controllers = ?[Principal.fromActor(this), configurationInput.owner];
+                        memory_allocation = null;
+                        compute_allocation = null;
+                    }
+                });
+
+                let installControlWasm = await IC0.install_code({
+                    arg = Text.encodeUtf8(Principal.toText(create_canister.canister_id)); // TODO: pass LLM canister id as arg
+                    wasm_module = Blob.fromArray(controlCanisterWasm);
+                    mode = #install;
+                    canister_id = createControlCanister.canister_id;
+                });
+
+                // Add control canister as a controller of LLM canister
+                await IC0.update_settings(({
+                    canister_id = create_canister.canister_id;
+                    settings = {
+                        controllers = ?[Principal.fromActor(this), configurationInput.owner, createControlCanister.canister_id];
+                        freezing_threshold = null;
+                        memory_allocation = null;
+                        compute_allocation = null;
+                    };
+                }));
 
                 let creationRecord = {
                     creationResult = "Success";
-                    newCanisterId = Principal.toText(create_canister.canister_id);
+                    newCanisterId = Principal.toText(createControlCanister.canister_id);
                 };
                 return #Ok(creationRecord);
             };
