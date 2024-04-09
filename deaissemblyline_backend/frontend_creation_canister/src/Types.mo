@@ -28,6 +28,7 @@ module Types {
     };
 
     public type AvailableModels = {
+        #Llama2_260K;
         #Llama2_15M;
     };
 

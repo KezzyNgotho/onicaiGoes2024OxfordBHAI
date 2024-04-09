@@ -30,6 +30,7 @@ module Types {
     };
 
     public type AvailableModels = {
+        #Llama2_260K;
         #Llama2_15M;
     };
 
@@ -44,6 +45,8 @@ module Types {
     };
 
     public type ModelCreationResult = Result<ModelCreationRecord, ApiError>;
+
+    public type InsertArtefactsResult = Result<ModelCreationArtefacts, ApiError>;
 
 // IC Management Canister types
     public type canister_id = Principal;

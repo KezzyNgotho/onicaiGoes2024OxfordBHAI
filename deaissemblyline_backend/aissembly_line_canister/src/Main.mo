@@ -125,7 +125,8 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
             return #Err(#Unauthorized);
         };
 
-        let defaultSelectedModel = #Llama2_15M;
+        let defaultSelectedModel = #Llama2_260K;
+        //let defaultSelectedModel = #Llama2_15M; TODO: no default but selectable by user
 
         switch(configurationInput.canisterType) {
             case (#Model) {

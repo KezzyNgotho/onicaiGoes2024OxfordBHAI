@@ -13,10 +13,10 @@ mops install
 
 ```bash
 # local
-dfx deploy aissembly_line_canister
+dfx deploy aissembly_line_canister #TODO: needs arguments
 
 # IC mainnet
-dfx deploy --ic aissembly_line_canister
+dfx deploy --ic aissembly_line_canister #TODO: needs arguments
 
 # Generate the bindings for the frontend
 dfx generate

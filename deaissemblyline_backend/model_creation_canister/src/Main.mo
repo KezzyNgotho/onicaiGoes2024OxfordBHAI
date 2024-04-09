@@ -18,7 +18,7 @@ import Utils "Utils";
 
 actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
-    let MASTER_CANISTER_ID : Text = _master_canister_id;
+    let MASTER_CANISTER_ID : Text = _master_canister_id; // Corresponds to DeAIssembly Backend canister
 
     // -------------------------------------------------------------------------------
     // Orthogonal Persisted Data storage
@@ -43,15 +43,35 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
     };
 
     let IC0 : Types.IC_Management = actor ("aaaaa-aa");
-    private stable var llama2_15M_wasm : Blob = "\de\ad\be\ef"; // TODO
 
     private func getModelCreationArtefacts(selectedModel : Types.AvailableModels) : ?Types.ModelCreationArtefacts {
         switch(selectedModel) {
+            case (#Llama2_260K) {
+                let creationArtefacts : ?Types.ModelCreationArtefacts = creationArtefactsByModel.get("Llama2_260K"); // TODO 260K
+                return creationArtefacts;
+            };
             case (#Llama2_15M) {
-                let creationArtefacts : ?Types.ModelCreationArtefacts = creationArtefactsByModel.get("Llama2_15M"); // TODO
+                let creationArtefacts : ?Types.ModelCreationArtefacts = creationArtefactsByModel.get("Llama2_15M"); // TODO 15M
                 return creationArtefacts;
             };
             case _ { return null; };
+        };
+    };
+
+// Admin function to insert needed artefacts to create canisters for a new model type
+// TODO: insert artefacts for 260K model
+// TODO: insert artefacts for 15M model; private stable var llama2_15M_wasm : Blob = "\de\ad\be\ef"; // TODO etc
+    public shared (msg) func addModelCreationArtefactsEntry(modelId : Text, creationArtefacts : Types.ModelCreationArtefacts) : async Types.InsertArtefactsResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+        let creationArtefactsResult = creationArtefactsByModel.put(modelId, creationArtefacts);
+        let result = creationArtefactsByModel.get(modelId);
+        switch(result) {
+            case (?newArtefacts) {
+                return #Ok(newArtefacts);
+            };
+            case _ { return #Err(#Other("Adding the artefacts failed.")); };
         };
     };
 
@@ -82,10 +102,10 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                     canister_id = create_canister.canister_id;
                 });
 
-                // TODO: upload files
+                // TODO: upload files (model and tokenizer)
 
 
-                // TODO: initialize
+                // TODO: initialize and check with call to ready
 
 
                 let creationRecord = {
