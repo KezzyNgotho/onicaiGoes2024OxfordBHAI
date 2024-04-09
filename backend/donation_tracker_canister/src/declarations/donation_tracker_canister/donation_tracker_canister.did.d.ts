@@ -132,7 +132,8 @@ export type InitRecipientsResult = { 'Ok' : [] | [InitRecipientsRecord] } |
 export interface OutPoint { 'txid' : Uint8Array | number[], 'vout' : number }
 export type Page = Uint8Array | number[];
 export type PaymentTransactionId = string;
-export type PaymentType = { 'BTC' : null };
+export type PaymentType = { 'BTC' : null } |
+  { 'CKBTC' : null };
 export interface PaymentTypeRecord { 'paymentType' : PaymentType }
 export type Recipient = { 'School' : SchoolInfo } |
   { 'Student' : StudentInfo };
@@ -153,6 +154,10 @@ export interface RecipientOverviewsRecord {
 export interface RecipientRecord { 'recipient' : Recipient }
 export type RecipientResult = { 'Ok' : [] | [RecipientRecord] } |
   { 'Err' : ApiError };
+export interface RecipientWallet {
+  'walletType' : WalletType,
+  'address' : string,
+}
 export type RecipientsResult = { 'Ok' : RecipientOverviewsRecord } |
   { 'Err' : ApiError };
 export type Satoshi = bigint;
@@ -160,6 +165,7 @@ export interface SchoolInfo {
   'id' : string,
   'thumbnail' : string,
   'name' : string,
+  'wallets' : Array<RecipientWallet>,
   'address' : string,
 }
 export interface SignUpFormInput {
@@ -171,6 +177,7 @@ export interface StudentInfo {
   'thumbnail' : string,
   'name' : string,
   'schoolId' : string,
+  'wallets' : Array<RecipientWallet>,
   'grade' : bigint,
 }
 export interface TxidstextRecord { 'txidstext' : Array<string> }
@@ -181,4 +188,6 @@ export interface Utxo {
   'value' : Satoshi,
   'outpoint' : OutPoint,
 }
+export type WalletType = { 'BTC' : null } |
+  { 'CKBTC' : null };
 export interface _SERVICE extends DonationTracker {}
