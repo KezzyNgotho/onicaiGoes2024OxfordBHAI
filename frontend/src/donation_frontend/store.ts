@@ -50,11 +50,19 @@ if (process.env.DFX_NETWORK === "ic") {
 };
 
 let authClient : AuthClient;
-const APPLICATION_NAME = "Bitcoin Donation App";
+const APPLICATION_NAME = "DeAIssembly Line";
 const APPLICATION_LOGO_URL = "https://vdfyi-uaaaa-aaaai-acptq-cai.ic0.app/faviconFutureWebInitiative.ico";
 //"https%3A%2F%2Fx6occ%2Dbiaaa%2Daaaai%2Dacqzq%2Dcai.icp0.io%2Ffavicon.ico"
 //"https%3A%2F%2Fx6occ-biaaa-aaaai-acqzq-cai.icp0.io%2FFutureWebInitiative%5Fimg.png";
 const AUTH_PATH = "/authenticate/?applicationName="+APPLICATION_NAME+"&applicationLogo="+APPLICATION_LOGO_URL+"#authorize";
+
+// Global variable to keep track of AI Creation process
+export let currentAiCreationObject = writable({
+  currentActiveFormStepIndex: 1,
+  llm: {
+    selectedModel: "#Llama2_260K", // default
+  },
+});
 
 // Global variable to access generally available currencies as payment types
 export let supportedPaymentTypes = writable(
