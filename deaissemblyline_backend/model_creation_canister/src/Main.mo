@@ -75,6 +75,82 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
         };
     };
 
+// Admin function to upload a canister wasm file
+    public shared (msg) func upload_wasm_bytes_chunk(modelId : Text, bytesChunk: [Nat8]) : async Types.FileUploadResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        switch(creationArtefactsByModel.get(modelId)) {
+            case (?existingArtefacts) {
+                let updatedArtefacts : Types.ModelCreationArtefacts = {
+                    canisterWasm = Array.append(existingArtefacts.canisterWasm, bytesChunk);
+                    modelWeights = existingArtefacts.modelWeights;
+                    tokenizer = existingArtefacts.tokenizer;
+                };
+
+                let updateArtefactsResult = creationArtefactsByModel.put(modelId, updatedArtefacts);
+
+                return #Ok({creationResult = "Success"});
+            };
+            case _ {
+                // new entry
+                let newArtefacts : Types.ModelCreationArtefacts = {
+                    canisterWasm = bytesChunk;
+                    modelWeights = [];
+                    tokenizer = [];
+                };
+
+                let updateArtefactsResult = creationArtefactsByModel.put(modelId, newArtefacts);
+                return #Ok({creationResult = "New entry created"});
+            };
+        };
+    };
+
+// Admin function to upload a model file
+    public shared (msg) func upload_model_bytes_chunk(modelId : Text, bytesChunk: [Nat8]) : async Types.FileUploadResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        switch(creationArtefactsByModel.get(modelId)) {
+            case (?existingArtefacts) {
+                let updatedArtefacts : Types.ModelCreationArtefacts = {
+                    canisterWasm = existingArtefacts.canisterWasm;
+                    modelWeights = Array.append(existingArtefacts.modelWeights, bytesChunk);
+                    tokenizer = existingArtefacts.tokenizer;
+                };
+
+                let updateArtefactsResult = creationArtefactsByModel.put(modelId, updatedArtefacts);
+
+                return #Ok({creationResult = "Success"});
+            };
+            case _ { return #Err(#Other("Add the canisterWasm first.")); };
+        };
+    };
+
+// Admin function to upload a tokenizer file
+    public shared (msg) func upload_tokenizer_bytes_chunk(modelId : Text, bytesChunk: [Nat8]) : async Types.FileUploadResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        switch(creationArtefactsByModel.get(modelId)) {
+            case (?existingArtefacts) {
+                let updatedArtefacts : Types.ModelCreationArtefacts = {
+                    canisterWasm = existingArtefacts.canisterWasm;
+                    modelWeights = existingArtefacts.modelWeights;
+                    tokenizer = Array.append(existingArtefacts.tokenizer, bytesChunk);
+                };
+
+                let updateArtefactsResult = creationArtefactsByModel.put(modelId, updatedArtefacts);
+
+                return #Ok({creationResult = "Success"});
+            };
+            case _ { return #Err(#Other("Add the canisterWasm.")); };
+        };
+    };
+
 // Spin up a new canister with an AI model running in it as specified by the input parameters
     public shared (msg) func createCanister(configurationInput : Types.ModelConfiguration) : async Types.ModelCreationResult {
         // Only backend canister may call this
@@ -97,7 +173,7 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
                 let install_wasm = await IC0.install_code({
                     arg = ""; // TODO
-                    wasm_module = creationArtefacts.canisterWasm;
+                    wasm_module = Blob.fromArray(creationArtefacts.canisterWasm);
                     mode = #install;
                     canister_id = create_canister.canister_id;
                 });

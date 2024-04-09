@@ -24,9 +24,9 @@ module Types {
     //-------------------------------------------------------------------------
     // data needed to create a new canister with the model
     public type ModelCreationArtefacts = {
-        canisterWasm : Blob;
-        modelWeights : Blob;
-        tokenizer : Blob;
+        canisterWasm : [Nat8];
+        modelWeights : [Nat8];
+        tokenizer : [Nat8];
     };
 
     public type AvailableModels = {
@@ -47,6 +47,12 @@ module Types {
     public type ModelCreationResult = Result<ModelCreationRecord, ApiError>;
 
     public type InsertArtefactsResult = Result<ModelCreationArtefacts, ApiError>;
+
+    public type FileUploadRecord = {
+        creationResult : Text;
+    };
+
+    public type FileUploadResult = Result<FileUploadRecord, ApiError>;
 
 // IC Management Canister types
     public type canister_id = Principal;
