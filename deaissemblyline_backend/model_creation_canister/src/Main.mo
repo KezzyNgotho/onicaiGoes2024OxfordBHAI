@@ -198,11 +198,11 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                 let modelCanister = actor (Principal.toText(create_canister.canister_id)) : actor {
                     health: ()                               -> async Bool;
                     ready: ()                                -> async Bool;
-                    reset_model: ()                          -> async Types.StatusCodeResult;
-                    reset_tokenizer: ()                      -> async Types.StatusCodeResult;
-                    upload_model_bytes_chunk: ([Nat8])     -> async Types.StatusCodeResult;
-                    upload_tokenizer_bytes_chunk: ([Nat8]) -> async Types.StatusCodeResult;
-                    initialize: ()                           -> async Types.StatusCodeResult;
+                    reset_model: ()                          -> async Types.StatusCodeRecordResult;
+                    reset_tokenizer: ()                      -> async Types.StatusCodeRecordResult;
+                    upload_model_bytes_chunk: ([Nat8])     -> async Types.StatusCodeRecordResult;
+                    upload_tokenizer_bytes_chunk: ([Nat8]) -> async Types.StatusCodeRecordResult;
+                    initialize: ()                           -> async Types.StatusCodeRecordResult;
                 };
 
                 // TODO: chunk

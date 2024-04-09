@@ -1,5 +1,7 @@
 import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
+import Nat16 "mo:base/Nat16";
+
 module Types {
     //-------------------------------------------------------------------------
     public type ApiError = {
@@ -7,6 +9,7 @@ module Types {
         #InvalidId;
         #ZeroAddress;
         #Other : Text;
+        #StatusCode : StatusCode;
     };
 
     public type Result<S, E> = {
@@ -53,6 +56,12 @@ module Types {
     };
 
     public type FileUploadResult = Result<FileUploadRecord, ApiError>;
+
+    public type StatusCode = Nat16;
+
+    public type StatusCodeRecord = { status_code : StatusCode };
+
+    public type StatusCodeRecordResult = Result<StatusCodeRecord, ApiError>;
 
 // IC Management Canister types
     public type canister_id = Principal;
