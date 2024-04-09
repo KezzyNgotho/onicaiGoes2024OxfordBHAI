@@ -19,21 +19,21 @@ def parse_args() -> argparse.Namespace:
         help="canister name in dfx.json",
     )
     parser.add_argument(
-        "--canister-id",
+        "--canister_id",
         type=str,
         default="",
-        help="canister-id name canister_ids.json",
+        help="canister_id name canister_ids.json",
     )
     parser.add_argument(
         "--candid",
         type=str,
-        default="src/llama2.did",
+        default="files/llama2.did",
         help="canister's candid file",
     )
     parser.add_argument(
         "--model",
         type=str,
-        default="models/stories15M.bin",
+        default="files/stories15M.bin",
         help="Model file (e.g. models/stories15M.bin)",
     )
     parser.add_argument(
@@ -71,6 +71,18 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help="seed, 0: use random seed based on time",
+    )
+    parser.add_argument(
+        "--model_id",
+        type=str,
+        default="Llama2_260K",
+        help="id of LLM as used in canister, e.g. Llama2_260K or Llama2_15M",
+    )
+    parser.add_argument(
+        "--wasm",
+        type=str,
+        default="files/llama2.wasm",
+        help="path to canister's wasm",
     )
     args = parser.parse_args()
     return args

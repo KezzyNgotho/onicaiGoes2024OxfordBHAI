@@ -23,7 +23,7 @@ DEBUG_VERBOSE = 1
 
 # ------------------------------------------------------------------------------
 def read_file_bytes(file_path: Path) -> bytes:
-    """Returns the stories15M.bin file as a bytes array"""
+    """Returns the file as a bytes array"""
     file_bytes = b""
     try:
         with open(file_path, "rb") as file:
@@ -51,6 +51,7 @@ def main() -> int:
     canister_name = args.canister
     canister_id = args.canister_id
     candid_path = ROOT_PATH / args.candid
+    model_id = args.model_id
     model_path = ROOT_PATH / args.model
     tokenizer_path = ROOT_PATH / args.tokenizer
     chunk_size_mb = args.chunksize
@@ -68,6 +69,7 @@ def main() -> int:
         f"\n - model_path      = {model_path}"
         f"\n - tokenizer_path  = {tokenizer_path}"
         f"\n - wasm_path  = {wasm_path}"
+        f"\n - model_id  = {model_id}"
     )
 
     # ---------------------------------------------------------------------------
@@ -107,6 +109,7 @@ def main() -> int:
             print(f"- chunk[-1] = {chunk[-1]}")
 
         response = canister_creator.upload_wasm_bytes_chunk(
+            model_id,
             chunk
         )  # pylint: disable=no-member
         if "Ok" in response[0].keys():
@@ -149,6 +152,7 @@ def main() -> int:
             print(f"- chunk[-1] = {chunk[-1]}")
 
         response = canister_creator.upload_tokenizer_bytes_chunk(
+            model_id,
             chunk
         )  # pylint: disable=no-member
         if "Ok" in response[0].keys():
@@ -188,6 +192,7 @@ def main() -> int:
             print(f"- chunk[-1] = {chunk[-1]}")
 
         response = canister_creator.upload_model_bytes_chunk(
+            model_id,
             chunk
         )  # pylint: disable=no-member
         if "Ok" in response[0].keys():

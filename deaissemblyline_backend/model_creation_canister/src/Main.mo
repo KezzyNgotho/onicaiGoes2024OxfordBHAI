@@ -159,7 +159,29 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
             return #Err(#Unauthorized);
         };
 
-        controlCanisterWasm := Array.append<Nat8>(controlCanisterWasm, bytesChunk);
+        controlCanisterWasm := Array.append(controlCanisterWasm, bytesChunk);
+
+        return #Ok({creationResult = "Success"});
+    };
+
+// Use with caution: Admin function to reset the control canister wasm
+    public shared (msg) func reset_control_canister_wasm() : async Types.FileUploadResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        controlCanisterWasm := [];
+
+        return #Ok({creationResult = "Success"});
+    };
+
+// Use with caution: Admin function to reset the creation artefacts for a model
+    public shared (msg) func reset_model_creation_artefacts(modelId : Text) : async Types.FileUploadResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        creationArtefactsByModel.delete(modelId);
 
         return #Ok({creationResult = "Success"});
     };
@@ -169,9 +191,10 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
 // Spin up a new canister with an AI model running in it as specified by the input parameters
     public shared (msg) func createCanister(configurationInput : Types.ModelConfiguration) : async Types.ModelCreationResult {
         // Only backend canister may call this
-        if (not Principal.isController(msg.caller)) {
+        // if (not Principal.isController(msg.caller) or Principal.equal(msg.caller, Principal.fromActor(this))) {
+        /* if (not Principal.isController(msg.caller)) {
             return #Err(#Unauthorized);
-        };
+        }; */
 
         switch(getModelCreationArtefacts(configurationInput.selectedModel)) {
             case (?creationArtefacts) {
@@ -188,7 +211,7 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                 });
 
                 let install_wasm = await IC0.install_code({
-                    arg = ""; // TODO
+                    arg = "";
                     wasm_module = Blob.fromArray(creationArtefacts.canisterWasm);
                     mode = #install;
                     canister_id = create_canister.canister_id;
@@ -196,13 +219,14 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
                 // Upload files (model and tokenizer)
                 let modelCanister = actor (Principal.toText(create_canister.canister_id)) : actor {
-                    health: ()                               -> async Bool;
-                    ready: ()                                -> async Bool;
+                    health: ()                               -> async Types.StatusCodeRecordResult;
+                    ready: ()                                -> async Types.StatusCodeRecordResult;
                     reset_model: ()                          -> async Types.StatusCodeRecordResult;
                     reset_tokenizer: ()                      -> async Types.StatusCodeRecordResult;
                     upload_model_bytes_chunk: ([Nat8])     -> async Types.StatusCodeRecordResult;
                     upload_tokenizer_bytes_chunk: ([Nat8]) -> async Types.StatusCodeRecordResult;
                     initialize: ()                           -> async Types.StatusCodeRecordResult;
+                    set_canister_mode : (Text) -> async Types.StatusCodeRecordResult;
                 };
 
                 // TODO: chunk
@@ -211,10 +235,15 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
                 // Initialize and check with call to ready
                 let initializeResult = await modelCanister.initialize();
+                let modeResultResult = await modelCanister.set_canister_mode("chat-principal");
                 let readyResult = await modelCanister.ready();
 
-                if (not readyResult) {
-                    return #Err(#Other("Creation failed."));
+                switch(readyResult) {
+                    case (#Err(error)) {
+                        //return #Err(#Other("Creation failed."));
+                        return #Err(error);
+                    };
+                    case _ { }; // canister is ready
                 };
 
                 // Create control canister
@@ -230,7 +259,8 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                 });
 
                 let installControlWasm = await IC0.install_code({
-                    arg = Text.encodeUtf8(Principal.toText(create_canister.canister_id)); // TODO: pass LLM canister id as arg
+                    //arg = Text.encodeUtf8(Principal.toText(create_canister.canister_id)); // TODO: pass LLM canister id as arg
+                    arg = "";
                     wasm_module = Blob.fromArray(controlCanisterWasm);
                     mode = #install;
                     canister_id = createControlCanister.canister_id;
@@ -257,6 +287,17 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
         };
     };
 
+    public shared (msg) func testCreateCanister() : async Types.ModelCreationResult {
+        /* if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        }; */
+        let config = {
+            selectedModel : Types.AvailableModels = #Llama2_260K;
+            owner: Principal = msg.caller;
+        };
+        let result = await createCanister(config);
+        return result;
+    };
     // -------------------------------------------------------------------------------
     // Canister upgrades
 
