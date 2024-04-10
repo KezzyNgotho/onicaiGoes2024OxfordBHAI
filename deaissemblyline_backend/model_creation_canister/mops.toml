@@ -1,5 +1,5 @@
 [dependencies]
-base = "0.9.8"
+base = "0.11.1"
 matchers = "https://github.com/kritzcreek/motoko-matchers#v1.2.0"
 accountid = "https://github.com/aviate-labs/principal.mo#main"
 hex = "https://github.com/letmejustputthishere/motoko-hex#master"
