@@ -39,4 +39,7 @@ dfx canister call model_creation_canister reset_model_creation_artefacts '("Llam
 
 ## In case the control canister wasm has to be reset (use with caution):
 dfx canister call model_creation_canister reset_control_canister_wasm
+
+## Might come in handy during local testing
+dfx ledger fabricate-cycles --canister model_creation_canister
 ```

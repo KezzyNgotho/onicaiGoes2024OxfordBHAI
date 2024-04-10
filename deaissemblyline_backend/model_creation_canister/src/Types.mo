@@ -63,6 +63,8 @@ module Types {
 
     public type StatusCodeRecordResult = Result<StatusCodeRecord, ApiError>;
 
+    public type CanisterIDRecord = { canister_id : Text };
+
 // IC Management Canister types
     public type canister_id = Principal;
     public type canister_settings = {

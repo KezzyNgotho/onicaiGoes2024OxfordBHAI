@@ -1,0 +1,57 @@
+type StatusCodeRecordResult = 
+ variant {
+   Err: ApiError;
+   Ok: StatusCodeRecord;
+ };
+type StatusCodeRecord = record {status_code: nat16;};
+type Prompt = 
+ record {
+   prompt: text;
+   rng_seed: nat64;
+   steps: nat64;
+   temperature: float64;
+   topp: float64;
+ };
+type NFTOutputRecordsArrayResult = 
+ variant {
+   Err: ApiError;
+   Ok: NFTOutputRecordsArray;
+ };
+type NFTOutputRecordsArray = vec NFTOutputRecord;
+type NFTOutputRecordResult = 
+ variant {
+   Err: ApiError;
+   Ok: NFTOutputRecord;
+ };
+type NFTOutputRecord = 
+ record {
+   prompt: Prompt;
+   story: text;
+   token_id: text;
+ };
+type NFT = record {token_id: text;};
+type CtrlbCanister = 
+ service {
+   Inference: (Prompt) -> (NFTOutputRecordResult);
+   NFTGetStories: (NFT) -> (NFTOutputRecordsArrayResult);
+   NFTGetStory: (NFT) -> (NFTOutputRecordResult);
+   NFTUpdate: (NFT) -> (NFTOutputRecordResult);
+   add_llm_canister_id: (CanisterIDRecord) -> (StatusCodeRecordResult);
+   amiController: () -> (StatusCodeRecordResult);
+   amiWhitelisted: () -> (StatusCodeRecordResult);
+   health: () -> (StatusCodeRecordResult);
+   isWhitelistLogicOk: () -> (StatusCodeRecordResult);
+   ready: () -> (StatusCodeRecordResult);
+   set_llm_canister_id: (CanisterIDRecord) -> (StatusCodeRecordResult);
+   whitelistPrincipal: (principal) -> (StatusCodeRecordResult);
+   whoami: () -> (principal);
+ };
+type CanisterIDRecord = record {canister_id: text;};
+type ApiError = 
+ variant {
+   InvalidId;
+   Other: text;
+   StatusCode: nat16;
+   ZeroAddress;
+ };
+service : () -> CtrlbCanister

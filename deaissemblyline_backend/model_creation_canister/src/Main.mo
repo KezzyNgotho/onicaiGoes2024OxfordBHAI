@@ -266,6 +266,13 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                     canister_id = createControlCanister.canister_id;
                 });
 
+                // Add LLM canister address to control canister
+                let controlCanister = actor (Principal.toText(createControlCanister.canister_id)) : actor {
+                    set_llm_canister_id : Types.CanisterIDRecord -> async Types.StatusCodeRecordResult;
+                };
+
+                let settingLlmIdResult = await controlCanister.set_llm_canister_id({ canister_id : Text = Principal.toText(create_canister.canister_id); });
+
                 // Add control canister as a controller of LLM canister
                 await IC0.update_settings(({
                     canister_id = create_canister.canister_id;
@@ -275,7 +282,7 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                         memory_allocation = null;
                         compute_allocation = null;
                     };
-                }));
+                }));                
 
                 let creationRecord = {
                     creationResult = "Success";
