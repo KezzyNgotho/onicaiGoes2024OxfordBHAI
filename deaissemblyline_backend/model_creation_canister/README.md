@@ -43,6 +43,11 @@ dfx canister call model_creation_canister reset_control_canister_wasm
 ## Might come in handy during local testing
 dfx ledger fabricate-cycles --canister model_creation_canister
 
-## Call inference endpoint on created control canister
+## Call endpoints on created control canister
+dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai health
+dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai amiController
+dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai isWhitelistLogicOk
+dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai ready
+dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai amiWhitelisted
 dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai Inference '(record {prompt="Joe went swimming in the pool"; steps=30; temperature=0.1; topp=0.9; rng_seed=0;})'
 ```
