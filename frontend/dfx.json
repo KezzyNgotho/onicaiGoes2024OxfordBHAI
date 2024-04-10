@@ -9,6 +9,17 @@
       ],
       "type": "assets"
     },
+    "aissembly_line_canister": {
+      "type": "custom",
+      "candid": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.did",
+      "wasm": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.wasm",
+      "remote": {
+        "candid": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.did",
+        "id": {
+          "ic": ""
+        }
+      }
+    },
     "donation_tracker_canister": {
       "type": "custom",
       "candid": "../backend/donation_tracker_canister/.dfx/local/canisters/donation_tracker_canister/donation_tracker_canister.did",

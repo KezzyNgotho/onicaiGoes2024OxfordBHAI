@@ -9,6 +9,12 @@ import {
   canisterId as backendCanisterId,
   idlFactory as backendIdlFactory,
 } from "../declarations/donation_tracker_canister";
+import {
+  aissembly_line_canister,
+  createActor as createAissemblyBackendCanisterActor,
+  canisterId as aissemblyBackendCanisterId,
+  idlFactory as aissemblyBackendIdlFactory,
+} from "../declarations/aissembly_line_canister";
 
 export let donationTrackerCanisterDefintion = {
   donation_tracker_canister,
@@ -62,6 +68,8 @@ export let currentAiCreationObject = writable({
   llm: {
     selectedModel: "#Llama2_260K", // default
   },
+  createdBackendCanisterId: "",
+  createdFrontendCanisterId: "",
 });
 
 // Global variable to access generally available LLM as model types
@@ -125,6 +133,7 @@ const nanosecondsPerHour = BigInt(3600000000000);
 type State = {
   isAuthed: "plug" | "stoic" | "nfid" | "bitfinity" | "internetidentity" |null;
   backendActor: typeof donation_tracker_canister;
+  aissemblyBackendActor: typeof aissembly_line_canister;
   principal: Principal;
   accountId: string;
   error: string;
@@ -134,6 +143,9 @@ type State = {
 const defaultState: State = {
   isAuthed: null,
   backendActor: createBackendCanisterActor(backendCanisterId, {
+    agentOptions: { host: HOST },
+  }),
+  aissemblyBackendActor: createBackendCanisterActor(aissemblyBackendCanisterId, {
     agentOptions: { host: HOST },
   }),
   principal: null,
@@ -190,11 +202,24 @@ export const createStore = ({
       return;
     };
 
+    const aissemblyBackendActor = createAissemblyBackendCanisterActor(aissemblyBackendCanisterId, {
+      agentOptions: {
+        identity,
+        host: HOST,
+      },
+    });
+
+    if (!aissemblyBackendActor) {
+      console.warn("couldn't create AIssembly backend actor");
+      return;
+    };
+
     //let accounts = JSON.parse(await identity.accounts());
 
     update((state) => ({
       ...state,
       backendActor,
+      aissemblyBackendActor,
       principal: identity.getPrincipal(),
       //accountId: accounts[0].address, // we take the default account associated with the identity
       accountId: null,
@@ -238,11 +263,24 @@ export const createStore = ({
       return;
     };
 
+    const aissemblyBackendActor = createAissemblyBackendCanisterActor(aissemblyBackendCanisterId, {
+      agentOptions: {
+        identity,
+        host: HOST,
+      },
+    });
+
+    if (!aissemblyBackendActor) {
+      console.warn("couldn't create AIssembly backend actor");
+      return;
+    };
+
     //let accounts = JSON.parse(await identity.accounts());
 
     update((state) => ({
       ...state,
       backendActor,
+      aissemblyBackendActor,
       principal: identity.getPrincipal(),
       //accountId: accounts[0].address, // we take the default account associated with the identity
       accountId: null,
@@ -275,6 +313,18 @@ export const createStore = ({
       return;
     };
 
+    const aissemblyBackendActor = createAissemblyBackendCanisterActor(aissemblyBackendCanisterId, {
+      agentOptions: {
+        identity,
+        host: HOST,
+      },
+    });
+
+    if (!aissemblyBackendActor) {
+      console.warn("couldn't create AIssembly backend actor");
+      return;
+    };
+
     // the stoic agent provides an `accounts()` method that returns
     // accounts associated with the principal
     let accounts = JSON.parse(await identity.accounts());
@@ -282,6 +332,7 @@ export const createStore = ({
     update((state) => ({
       ...state,
       backendActor,
+      aissemblyBackendActor,
       principal: identity.getPrincipal(),
       accountId: accounts[0].address, // we take the default account associated with the identity
       isAuthed: "stoic",
@@ -356,11 +407,22 @@ export const createStore = ({
       return;
     };
 
+    const aissemblyBackendActor = (await window.ic?.plug.createActor({
+      canisterId: aissemblyBackendCanisterId,
+      interfaceFactory: aissemblyBackendIdlFactory,
+    })) as typeof aissembly_line_canister;
+
+    if (!aissemblyBackendActor) {
+      console.warn("couldn't create AIssembly backend actor");
+      return;
+    };
+
     const principal = await window.ic.plug.agent.getPrincipal();
 
     update((state) => ({
       ...state,
       backendActor,
+      aissemblyBackendActor,
       principal,
       accountId: window.ic.plug.sessionManager.sessionData.accountId,
       isAuthed: "plug",
@@ -437,11 +499,23 @@ export const createStore = ({
       return;
     };
 
+    const aissemblyBackendActor = (await window.ic?.infinityWallet.createActor({
+      canisterId: aissemblyBackendCanisterId,
+      interfaceFactory: aissemblyBackendIdlFactory,
+      host,
+    })) as typeof aissembly_line_canister;
+
+    if (!aissemblyBackendActor) {
+      console.warn("couldn't create AIssembly backend actor");
+      return;
+    };
+
     const principal = await window.ic.infinityWallet.getPrincipal();
 
     update((state) => ({
       ...state,
       backendActor,
+      aissemblyBackendActor,
       principal,
       //accountId: window.ic.infinityWallet.sessionManager.sessionData.accountId,
       isAuthed: "bitfinity",
