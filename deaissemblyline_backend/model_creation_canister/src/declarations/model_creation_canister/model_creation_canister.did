@@ -7,7 +7,8 @@ type ModelCreationResult =
 type ModelCreationRecord = 
  record {
    creationResult: text;
-   newCanisterId: text;
+   newCtlrbCanisterId: text;
+   newLlmCanisterId: text;
  };
 type ModelCreationCanister = 
  service {
@@ -15,6 +16,9 @@ type ModelCreationCanister =
     (InsertArtefactsResult);
    amiController: () -> (AuthRecordResult);
    createCanister: (ModelConfiguration) -> (ModelCreationResult);
+   reset_control_canister_wasm: () -> (FileUploadResult);
+   reset_model_creation_artefacts: (text) -> (FileUploadResult);
+   testCreateCanister: () -> (ModelCreationResult);
    upload_control_wasm_bytes_chunk: (vec nat8) -> (FileUploadResult);
    upload_model_bytes_chunk: (text, vec nat8) -> (FileUploadResult);
    upload_tokenizer_bytes_chunk: (text, vec nat8) -> (FileUploadResult);

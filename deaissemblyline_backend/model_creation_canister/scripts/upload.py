@@ -18,7 +18,7 @@ ROOT_PATH = Path(__file__).parent.parent
 #  0 - none
 #  1 - minimal
 #  2 - a lot
-DEBUG_VERBOSE = 1
+DEBUG_VERBOSE = 2
 
 
 # ------------------------------------------------------------------------------

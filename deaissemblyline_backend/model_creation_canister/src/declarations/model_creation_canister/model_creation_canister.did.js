@@ -27,8 +27,9 @@ export const idlFactory = ({ IDL }) => {
     'owner' : IDL.Principal,
   });
   const ModelCreationRecord = IDL.Record({
+    'newLlmCanisterId' : IDL.Text,
+    'newCtlrbCanisterId' : IDL.Text,
     'creationResult' : IDL.Text,
-    'newCanisterId' : IDL.Text,
   });
   const ModelCreationResult = IDL.Variant({
     'Ok' : ModelCreationRecord,
@@ -51,6 +52,13 @@ export const idlFactory = ({ IDL }) => {
         [ModelCreationResult],
         [],
       ),
+    'reset_control_canister_wasm' : IDL.Func([], [FileUploadResult], []),
+    'reset_model_creation_artefacts' : IDL.Func(
+        [IDL.Text],
+        [FileUploadResult],
+        [],
+      ),
+    'testCreateCanister' : IDL.Func([], [ModelCreationResult], []),
     'upload_control_wasm_bytes_chunk' : IDL.Func(
         [IDL.Vec(IDL.Nat8)],
         [FileUploadResult],

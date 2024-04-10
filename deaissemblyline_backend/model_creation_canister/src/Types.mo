@@ -39,12 +39,26 @@ module Types {
 
     public type ModelConfiguration = {
         selectedModel : AvailableModels;
-        owner: Principal;
+        owner : Principal;
     };
 
     public type ModelCreationRecord = {
         creationResult : Text;
-        newCanisterId : Text;
+        newCtlrbCanisterId : Text;
+        newLlmCanisterId : Text;
+    };
+
+    public type NFTCollectionRecord = {
+        nft_supply_cap : Nat64;
+        nft_total_supply : Nat64;
+        nft_symbol : Text;
+        nft_name : Text;
+        nft_description : Text;
+    };
+
+    public type NFTWhitelistRecord = {
+        id : Principal;
+        description : Text;
     };
 
     public type ModelCreationResult = Result<ModelCreationRecord, ApiError>;
@@ -65,7 +79,7 @@ module Types {
 
     public type CanisterIDRecord = { canister_id : Text };
 
-// IC Management Canister types
+    // IC Management Canister types
     public type canister_id = Principal;
     public type canister_settings = {
         controllers : ?[Principal];

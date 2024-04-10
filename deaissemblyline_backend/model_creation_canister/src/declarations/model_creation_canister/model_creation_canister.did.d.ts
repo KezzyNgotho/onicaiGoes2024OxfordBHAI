@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export type ApiError = { 'InvalidId' : null } |
   { 'ZeroAddress' : null } |
@@ -32,6 +33,9 @@ export interface ModelCreationCanister {
   >,
   'amiController' : ActorMethod<[], AuthRecordResult>,
   'createCanister' : ActorMethod<[ModelConfiguration], ModelCreationResult>,
+  'reset_control_canister_wasm' : ActorMethod<[], FileUploadResult>,
+  'reset_model_creation_artefacts' : ActorMethod<[string], FileUploadResult>,
+  'testCreateCanister' : ActorMethod<[], ModelCreationResult>,
   'upload_control_wasm_bytes_chunk' : ActorMethod<
     [Uint8Array | number[]],
     FileUploadResult
@@ -51,10 +55,13 @@ export interface ModelCreationCanister {
   'whoami' : ActorMethod<[], Principal>,
 }
 export interface ModelCreationRecord {
+  'newLlmCanisterId' : string,
+  'newCtlrbCanisterId' : string,
   'creationResult' : string,
-  'newCanisterId' : string,
 }
 export type ModelCreationResult = { 'Ok' : ModelCreationRecord } |
   { 'Err' : ApiError };
 export type StatusCode = number;
 export interface _SERVICE extends ModelCreationCanister {}
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];
