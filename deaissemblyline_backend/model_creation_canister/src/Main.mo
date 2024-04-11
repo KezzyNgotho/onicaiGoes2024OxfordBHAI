@@ -7,6 +7,7 @@ import Text "mo:base/Text";
 import Iter "mo:base/Iter";
 import Blob "mo:base/Blob";
 import Nat64 "mo:base/Nat64";
+import Nat8 "mo:base/Nat8";
 import Time "mo:base/Time";
 import Int "mo:base/Int";
 import List "mo:base/List";
@@ -18,6 +19,7 @@ import Utils "Utils";
 
 actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
+    // TODO: This is not used, but removing it brakes deployment. Don't understand yet why...
     let MASTER_CANISTER_ID : Text = _master_canister_id; // Corresponds to DeAIssembly Backend canister
 
     // -------------------------------------------------------------------------------
@@ -187,8 +189,6 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
         return #Ok({ creationResult = "Success" });
     };
 
-    let chunkSize = 1 / 2 * 1024 * 1024; // 0.5 MB
-
     // Spin up a new canister with an AI model running in it as specified by the input parameters
     public shared (msg) func createCanister(configurationInput : Types.ModelConfiguration) : async Types.ModelCreationResult {
         // Only backend canister may call this
@@ -197,7 +197,6 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
             return #Err(#Unauthorized);
         }; */
 
-        var llmIdText : Text = "";
         switch (getModelCreationArtefacts(configurationInput.selectedModel)) {
             case (?creationArtefacts) {
                 // Create LLM canister
@@ -234,8 +233,25 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
                 };
 
                 // TODO: chunk
-                let uploadTokenizerResult = await modelCanister.upload_tokenizer_bytes_chunk(creationArtefacts.tokenizer);
-                let uploadModelResult = await modelCanister.upload_model_bytes_chunk(creationArtefacts.modelWeights);
+                // let chunkSize = 42000; // ~0.01 MB for testing on 260K model
+                let chunkSize = 9 * 1024 * 1024; // 9 MB
+
+                let bufferTokenizer = Buffer.fromArray<Nat8>(creationArtefacts.tokenizer);
+                let chunksTokenizer = Buffer.chunk<Nat8>(bufferTokenizer, chunkSize);
+                for (chunk in chunksTokenizer.vals()) {
+                    D.print("Uploading another chunk of the tokenizer...");
+                    let uploadTokenizerResult = await modelCanister.upload_tokenizer_bytes_chunk(Buffer.toArray<Nat8>(chunk));
+                };
+
+                let bufferModel = Buffer.fromArray<Nat8>(creationArtefacts.modelWeights);
+                let chunksModel = Buffer.chunk<Nat8>(bufferModel, chunkSize);
+                for (chunk in chunksModel.vals()) {
+                    D.print("Uploading another chunk of the model...");
+                    let uploadModelResult = await modelCanister.upload_model_bytes_chunk(Buffer.toArray<Nat8>(chunk));
+                };
+
+                // let uploadTokenizerResult = await modelCanister.upload_tokenizer_bytes_chunk(creationArtefacts.tokenizer);
+                // let uploadModelResult = await modelCanister.upload_model_bytes_chunk(creationArtefacts.modelWeights);
 
                 // Initialize and check with call to ready
                 let initializeResult = await modelCanister.initialize();
