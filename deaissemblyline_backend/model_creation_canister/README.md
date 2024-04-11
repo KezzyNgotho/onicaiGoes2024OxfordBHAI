@@ -34,6 +34,35 @@ pip install -r requirements.txt
 Run upload script:
 
 ```bash
+# --------------------------------------------------------------------------
+# IMPORTANT: ic-py might throw a timeout => patch it here:
+# Ubuntu:
+# /home/arjaan/miniconda3/envs/<your-env>/lib/python3.10/site-packages/httpx/_config.py
+# Mac:
+# /Users/arjaan/miniconda3/envs/<your-env>/lib/python3.10/site-packages/httpx/_config.py
+# DEFAULT_TIMEOUT_CONFIG = Timeout(timeout=5.0)
+DEFAULT_TIMEOUT_CONFIG = Timeout(timeout=99999999.0)
+# And perhaps here:
+# Ubuntu:
+# /home/arjaan/miniconda3/envs/<your-env>/lib/python3.10/site-packages/httpcore/_backends/sync.py #L28-L29
+# Mac:
+# /Users/arjaan/miniconda3/envs/<your-env>/lib/python3.10/site-packages/httpcore/_backends/sync.py #L28-L29
+#
+class SyncStream(NetworkStream):
+    def __init__(self, sock: socket.socket) -> None:
+        self._sock = sock
+
+    def read(self, max_bytes: int, timeout: typing.Optional[float] = None) -> bytes:
+        exc_map: ExceptionMapping = {socket.timeout: ReadTimeout, OSError: ReadError}
+        with map_exceptions(exc_map):
+            # PATCH AB
+            timeout = 999999999
+            # ENDPATCH
+            self._sock.settimeout(timeout)
+            return self._sock.recv(max_bytes)
+# --------------------------------------------------------------------------
+
+
 python -m scripts.upload --network local --canister model_creation_canister --model files/stories260K.bin --tokenizer files/tok512.bin --model_id Llama2_260K --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 
 python -m scripts.upload_control_canister --network local --canister model_creation_canister --wasm files/ctrlb_canister.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
