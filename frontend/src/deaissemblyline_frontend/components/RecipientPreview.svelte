@@ -1,7 +1,7 @@
 <script lang="ts">
   import { push } from "svelte-spa-router";
 
-  import RecipientProfile from "../components/RecipientProfile.svelte";
+  import RecipientProfile from "./RecipientProfile.svelte";
 
   import type { RecipientOverview } from "src/declarations/donation_tracker_canister/donation_tracker_canister.did";
   

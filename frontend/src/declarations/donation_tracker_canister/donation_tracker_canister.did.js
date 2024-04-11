@@ -26,7 +26,7 @@ export const idlFactory = ({ IDL }) => {
   const DTI = IDL.Nat;
   const DtiRecord = IDL.Record({ 'dti' : DTI });
   const Satoshi = IDL.Nat64;
-  const PaymentType = IDL.Variant({ 'BTC' : IDL.Null });
+  const PaymentType = IDL.Variant({ 'BTC' : IDL.Null, 'CKBTC' : IDL.Null });
   const DonationCategories = IDL.Record({
     'curriculumDesign' : Satoshi,
     'teacherSupport' : Satoshi,
@@ -86,10 +86,16 @@ export const idlFactory = ({ IDL }) => {
     'pageSubmittedFrom' : IDL.Text,
   });
   const RecipientIdRecord = IDL.Record({ 'recipientId' : RecipientId });
+  const WalletType = IDL.Variant({ 'BTC' : IDL.Null, 'CKBTC' : IDL.Null });
+  const RecipientWallet = IDL.Record({
+    'walletType' : WalletType,
+    'address' : IDL.Text,
+  });
   const SchoolInfo = IDL.Record({
     'id' : IDL.Text,
     'thumbnail' : IDL.Text,
     'name' : IDL.Text,
+    'wallets' : IDL.Vec(RecipientWallet),
     'address' : IDL.Text,
   });
   const StudentInfo = IDL.Record({
@@ -97,6 +103,7 @@ export const idlFactory = ({ IDL }) => {
     'thumbnail' : IDL.Text,
     'name' : IDL.Text,
     'schoolId' : IDL.Text,
+    'wallets' : IDL.Vec(RecipientWallet),
     'grade' : IDL.Nat,
   });
   const Recipient = IDL.Variant({

@@ -1,4 +1,4 @@
-# Bitcoin Donation App
+# DeAIssembly Line App
 
 # Development & Deployment
 ## Running the project locally
@@ -26,10 +26,10 @@ npm run erase-replica
 
 Visit backend canister folders, and install those first, using instructions of their READMEs.
 
-Then, deploy the frontend canister and internet identy with:
+Then, deploy the frontend canister and internet identity with:
 ```bash
 dfx deploy internet_identity
-dfx deploy donation_frontend
+dfx deploy deaissemblyline_frontend
 dfx generate
 ```
 --> Access frontend at http://localhost:4943/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai
@@ -56,7 +56,7 @@ Ensure that all changes needed for Mainnet deployment have been made (e.g. defin
 
 Production Canisters:
 ```bash
-dfx deploy --network ic donation_frontend
+dfx deploy --network ic deaissemblyline_frontend
 ```
 
 In case there are authentication issues, you could try this command
@@ -73,16 +73,6 @@ Top up cycles:
 ```bash
 dfx identity --network=ic get-wallet
 dfx wallet --network ic balance
-dfx canister --network ic status donation_frontend
-dfx canister --network ic --wallet 3v5vy-2aaaa-aaaai-aapla-cai deposit-cycles 300000000000 donation_frontend
-```
-
-## Get and delete Email Subscribers
-The project has email subscription functionality included. The following commands are helpful for managing subscriptions (note that only controllers of donation_tracker_canister may run these).
-```bash
-dfx canister call donation_tracker_canister getEmailSubscribers
-dfx canister call donation_tracker_canister deleteEmailSubscriber 'example@example.com'
-
-dfx canister call donation_tracker_canister getEmailSubscribers --network ic
-dfx canister call donation_tracker_canister deleteEmailSubscriber 'example@example.com' --network ic
+dfx canister --network ic status deaissemblyline_frontend
+dfx canister --network ic --wallet 3v5vy-2aaaa-aaaai-aapla-cai deposit-cycles 300000000000 deaissemblyline_frontend
 ```

@@ -1,0 +1,113 @@
+<script lang="ts">
+  import { store, currentAiCreationObject } from "../../../../store";
+
+  import Message from './Message.svelte';
+
+  let newMessageText = '';
+  let messages = [];
+
+  let replyText = 'Thinking...';
+
+  let messageGenerationInProgress = false;
+
+  let showCreateModelFirstMessage = !$currentAiCreationObject.createdBackendCanisterId || $currentAiCreationObject.createdBackendCanisterId === "";
+
+  const generateProgressCallback = (_step: number, message: string) => {
+    replyText = message;
+    messages = [...messages.slice(0, -1), { sender: 'Your AI', content: replyText }];
+  };
+
+  async function sendMessage() {
+    if (!$store.isAuthed) {
+      return;
+    };
+    if (!$currentAiCreationObject.createdBackendCanisterId || $currentAiCreationObject.createdBackendCanisterId === "") {
+      showCreateModelFirstMessage = true;
+    };
+    messageGenerationInProgress = true;
+    if(newMessageText.trim() !== '') {
+      messages = [...messages, { sender: 'You', content: newMessageText.trim() }];
+      const newPrompt = newMessageText.trim();
+      newMessageText = '';
+      try {
+        messages = [...messages, { sender: 'Your AI', content: replyText }];
+        let modelBackendCanister = await store.getActorForModelBackendCanister();
+        let steps = BigInt(30);
+        let temperature = 0.1;
+        let topp = 0.9;
+        let rng_seed = BigInt(0);
+        let promptInput = {
+          prompt : newPrompt,
+          rng_seed,
+          steps,
+          temperature,
+          topp,
+        };
+        const reply = await modelBackendCanister.Inference(promptInput);
+        messages = [...messages.slice(0, -1), { sender: 'Your AI', content: reply }]; 
+      } catch (error) {
+        console.error("Error getting response from model: ", error);
+        messages = [...messages, { sender: 'Your AI', content: "There was an error unfortunately. Please try again." }];
+      }
+      replyText = 'Thinking...';
+    }
+    messageGenerationInProgress = false;
+  };
+</script>
+
+{#if !$store.isAuthed}
+  <div>
+    <p>Please note that you may only interact with your AI model if you log in (such that it knows it's you).</p>
+  </div>
+{:else if showCreateModelFirstMessage}
+  <div>
+    <p>Please first create your AI model on the previous step. Then, you can interact with it here.</p>
+  </div>
+{:else}
+  <div class="chatbox">
+    <div class="messages">
+      {#each messages as message (message.content)}
+        <Message {message} />
+      {/each}
+    </div>
+
+    <div class="message-input">
+      <input bind:value={newMessageText} placeholder="Type your message here..." />
+      {#if messageGenerationInProgress}
+        <button disabled on:click={sendMessage}>Send</button>
+      {:else}
+        <button on:click={sendMessage}>Send</button>
+      {/if}
+    </div>
+  </div>
+  {/if}
+
+
+<style>
+  .chatbox {
+    width: 100%;
+    height: 400px;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+  }
+
+  .message-input {
+    height: 60px;
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+  }
+
+  .message-input input {
+    height: 40px;
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+</style>

@@ -15,6 +15,10 @@ import {
   canisterId as aissemblyBackendCanisterId,
   idlFactory as aissemblyBackendIdlFactory,
 } from "../declarations/aissembly_line_canister";
+import {
+  ctrlb_canister,
+  createActor as createModelBackendCanisterActor,
+} from "../declarations/ctrlb_canister";
 
 export let donationTrackerCanisterDefintion = {
   donation_tracker_canister,
@@ -71,6 +75,9 @@ export let currentAiCreationObject = writable({
   createdBackendCanisterId: "",
   createdFrontendCanisterId: "",
 });
+
+let aiCreationObject;
+currentAiCreationObject.subscribe((value) => aiCreationObject = value);
 
 // Global variable to access generally available LLM as model types
 export let supportedAiModelTypes = writable(
@@ -145,7 +152,7 @@ const defaultState: State = {
   backendActor: createBackendCanisterActor(backendCanisterId, {
     agentOptions: { host: HOST },
   }),
-  aissemblyBackendActor: createBackendCanisterActor(aissemblyBackendCanisterId, {
+  aissemblyBackendActor: createAissemblyBackendCanisterActor(aissemblyBackendCanisterId, {
     agentOptions: { host: HOST },
   }),
   principal: null,
@@ -407,7 +414,7 @@ export const createStore = ({
       return;
     };
 
-    const aissemblyBackendActor = (await window.ic?.plug.createActor({
+    const aissemblyBackendActor = (await window.ic?.plug.createAissemblyActor({
       canisterId: aissemblyBackendCanisterId,
       interfaceFactory: aissemblyBackendIdlFactory,
     })) as typeof aissembly_line_canister;
@@ -499,7 +506,7 @@ export const createStore = ({
       return;
     };
 
-    const aissemblyBackendActor = (await window.ic?.infinityWallet.createActor({
+    const aissemblyBackendActor = (await window.ic?.infinityWallet.createAissemblyActor({
       canisterId: aissemblyBackendCanisterId,
       interfaceFactory: aissemblyBackendIdlFactory,
       host,
@@ -579,6 +586,20 @@ export const createStore = ({
     });
   };
 
+  const getActorForModelBackendCanister = async () => {
+    if (authClient) {
+      const identity = await authClient.getIdentity();
+      const modelBackendActor = createModelBackendCanisterActor(aiCreationObject.createdBackendCanisterId, {
+        agentOptions: {
+          identity,
+          host: HOST,
+        },
+      });
+      return modelBackendActor;
+    };
+    return null;    
+  };
+
   return {
     subscribe,
     update,
@@ -588,6 +609,7 @@ export const createStore = ({
     bitfinityConnect,
     internetIdentityConnect,
     disconnect,
+    getActorForModelBackendCanister,
   };
 };
 
@@ -613,6 +635,7 @@ declare global {
           host?: string;
         }) => Promise<any>;
         createActor: (options: {}) => Promise<typeof donation_tracker_canister>;
+        createAissemblyActor: (options: {}) => Promise<typeof aissembly_line_canister>;
         isConnected: () => Promise<boolean>;
         disconnect: () => Promise<boolean>;
         createAgent: (args?: {
@@ -660,6 +683,11 @@ declare global {
           interfaceFactory: any;
           host?: string;
         }) => Promise<typeof donation_tracker_canister>;
+        createAissemblyActor: (options: {
+          canisterId: string;
+          interfaceFactory: any;
+          host?: string;
+        }) => Promise<typeof aissembly_line_canister>;
         isConnected: () => Promise<boolean>;
         /* disconnect: () => Promise<boolean>;
         createAgent: (args?: {

@@ -33,17 +33,14 @@
   <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
     <div class="sm:flex sm:items-center sm:justify-between">
       <a href="#top" class="flex items-center mb-4 sm:mb-0">
-        <img src="/images/bitcoinDonationApp_logo_app.svg" class="h-9 mr-8" alt="logo" />
+        <img src="/images/deaissemblyLine_logo_app.jpg" class="h-9 mr-8" alt="logo" />
       </a>
       <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
         <li>
-          <a href="#/donate" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Donate</a>
+          <a href="#/create" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Create</a>
         </li>
         <li>
-          <a href="#/explore" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Donations</a>
-        </li>
-        <li>
-          <a href="#/recipients" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Recipients</a>
+          <a href="#/learn" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Learn</a>
         </li>
         <li>
           <a href="#/about" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">About</a>

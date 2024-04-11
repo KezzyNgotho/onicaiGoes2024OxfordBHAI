@@ -21,7 +21,7 @@
 <nav class="bg-gray-800 border-gray-200 dark:bg-gray-900">
   <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
     <a href="#top" class="flex items-center">
-      <img src="/images/bitcoinDonationApp_logo_app.png" class="h-14 mr-14" alt="Logo" />
+      <img src="/images/deaissemblyLine_logo_app.jpg" class="h-14 mr-14" alt="Logo" />
     </a>
     <div class="flex items-center">
       {#if !$store.isAuthed}
@@ -37,13 +37,10 @@
     <div class="flex items-center">
       <ul class="flex flex-row font-medium mt-0 mr-6 space-x-8 text-sm">
         <li>
-          <a href="#/donate" class="text-gray-300 dark:text-white hover:underline" aria-current="page">Donate</a>
+          <a href="#/create" class="text-gray-300 dark:text-white hover:underline" aria-current="page">Create</a>
         </li>
         <li>
-          <a href="#/explore" class="text-gray-200 dark:text-white hover:underline">Donations</a>
-        </li>
-        <li>
-          <a href="#/recipients" class="text-gray-100 dark:text-white hover:underline">Recipients</a>
+          <a href="#/learn" class="text-gray-200 dark:text-white hover:underline">Learn</a>
         </li>
         <li>
           <a href="#/about" class="text-gray-200 dark:text-white hover:underline">About</a>

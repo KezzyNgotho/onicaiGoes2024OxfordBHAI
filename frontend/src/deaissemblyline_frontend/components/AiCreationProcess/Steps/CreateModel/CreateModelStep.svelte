@@ -1,7 +1,7 @@
 <script lang="ts">
   import { store, currentAiCreationObject } from "../../../../store";
 
-  import spinner from "../../../assets/loading.gif";
+  import spinner from "../../../../assets/loading.gif";
 
   let validationErrors = [];
 
@@ -21,21 +21,30 @@
   let createdModelCanisterId;
 
   async function createModel() {
+    if (!$store.isAuthed) {
+      return;
+    };
+    console.log("#######Debug createModel");
     // Create the model for the user in the backend
     modelCreationInProgress = true;
     // AIssembly Canister Integration
-      // Parameters: record with Donation ({donation : {totalAmount: …, allocation: …, …}})
-      // Returns: 
-        // Success: Ok wraps record with with DTI
-        // Error: Err wraps more info (including if not found)
-        // Result<{dti : DTI}, ApiError>;
+    var selectedModel = [];
+    if ($currentAiCreationObject.llm.selectedModel === "#Llama2_15M") {
+      const llama215mSelectionValue = { 'Llama2_15M' : null };
+      selectedModel = [llama215mSelectionValue];
+    } else {
+      selectedModel = [{ 'Llama2_260K' : null }]; // default model
+    };
 
     const modelInput = {
       canisterType : { 'Model' : null },
-      selectedModel : $currentAiCreationObject.llm.selectedModel || null,
-      owner: null,
+      selectedModel,
+      owner: [],
     };
+
+    console.log("#######Debug createModel modelInput ", modelInput);
     const createModelResponse = await $store.aissemblyBackendActor.createNewCanister(modelInput);
+    console.log("#######Debug createModel createModelResponse ", createModelResponse);
     // @ts-ignore
     if (createModelResponse.Err) {
       modelCreationError = true;
@@ -75,6 +84,10 @@
           <button disabled class="opacity-50 cursor-not-allowed bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700">
             Create My AI!
           </button>
+        {:else if !$store.isAuthed}
+          <div>
+            <p>Please note that you may only create your AI model if you log in (such that you become its owner).</p>
+          </div>
         {:else}
           <p class="mt-4">Great, everything is in place! If you're ready, you can finalize the donation now.</p>
           {#if modelCreationInProgress}
