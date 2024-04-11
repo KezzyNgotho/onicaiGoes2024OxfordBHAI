@@ -83,6 +83,7 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
     <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
       Create Your AI model</h1>
+    <p hidden>{loadExistingUserModel}</p>
     {#if userAlreadyHasModel}
       <div class="text-gray-800 dark:text-gray-200">
         <h3>AI Model Created</h3>
@@ -117,7 +118,7 @@
             <p>Please note that you may only create your AI model if you log in (such that you become its owner).</p>
           </div>
         {:else}
-          {loadExistingUserModel}
+          <p hidden>{loadExistingUserModel}</p>
           {#if modelCreationInProgress}
             <button disabled class="opacity-50 cursor-not-allowed bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700">
               Create My AI!
