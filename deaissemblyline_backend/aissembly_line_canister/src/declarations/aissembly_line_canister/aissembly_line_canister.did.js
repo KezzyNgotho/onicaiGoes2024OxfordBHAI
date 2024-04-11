@@ -21,8 +21,9 @@ export const idlFactory = ({ IDL }) => {
     'owner' : IDL.Opt(IDL.Principal),
   });
   const ModelCreationRecord = IDL.Record({
+    'newLlmCanisterId' : IDL.Text,
+    'newCtlrbCanisterId' : IDL.Text,
     'creationResult' : IDL.Text,
-    'newCanisterId' : IDL.Text,
   });
   const ModelCreationResult = IDL.Variant({
     'Ok' : ModelCreationRecord,

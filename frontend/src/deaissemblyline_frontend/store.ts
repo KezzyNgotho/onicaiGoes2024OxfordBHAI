@@ -27,6 +27,9 @@ export let donationTrackerCanisterDefintion = {
   backendIdlFactory,
 };
 
+console.log("##############Debug store backendCanisterId ", backendCanisterId);
+console.log("##############Debug store aissemblyBackendCanisterId ", aissemblyBackendCanisterId);
+
 //__________Local vs Mainnet Development____________
 /* export const HOST =
   backendCanisterId === "vee64-zyaaa-aaaai-acpta-cai"

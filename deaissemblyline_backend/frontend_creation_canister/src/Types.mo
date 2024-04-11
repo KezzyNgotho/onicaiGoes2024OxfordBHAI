@@ -40,7 +40,8 @@ module Types {
 
     public type FrontendCreationRecord = {
         creationResult : Text;
-        newCanisterId : Text;
+        newCtlrbCanisterId : Text;
+        newLlmCanisterId : Text;
     };
 
     public type FrontendCreationResult = Result<FrontendCreationRecord, ApiError>;

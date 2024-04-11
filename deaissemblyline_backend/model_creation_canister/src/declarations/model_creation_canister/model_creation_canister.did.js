@@ -58,6 +58,7 @@ export const idlFactory = ({ IDL }) => {
         [FileUploadResult],
         [],
       ),
+    'setMasterCanisterId' : IDL.Func([IDL.Text], [AuthRecordResult], []),
     'testCreateCanister' : IDL.Func([], [ModelCreationResult], []),
     'upload_control_wasm_bytes_chunk' : IDL.Func(
         [IDL.Vec(IDL.Nat8)],
@@ -83,4 +84,4 @@ export const idlFactory = ({ IDL }) => {
   });
   return ModelCreationCanister;
 };
-export const init = ({ IDL }) => { return [IDL.Text]; };
+export const init = ({ IDL }) => { return []; };

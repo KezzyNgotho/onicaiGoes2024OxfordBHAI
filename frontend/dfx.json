@@ -16,7 +16,7 @@
       "remote": {
         "candid": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.did",
         "id": {
-          "ic": "fj5jn-2qaaa-aaaag-acmfq-cai"
+          "ic": "6ugvi-7aaaa-aaaai-acria-cai"
         }
       }
     },

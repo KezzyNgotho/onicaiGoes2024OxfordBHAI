@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export type ApiError = { 'InvalidId' : null } |
   { 'ZeroAddress' : null } |
@@ -191,3 +192,5 @@ export interface Utxo {
 export type WalletType = { 'BTC' : null } |
   { 'CKBTC' : null };
 export interface _SERVICE extends DonationTracker {}
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

@@ -1,0 +1,42 @@
+type FrontendCreationResult = 
+ variant {
+   Err: ApiError;
+   Ok: FrontendCreationRecord;
+ };
+type FrontendCreationRecord = 
+ record {
+   creationResult: text;
+   newCanisterId: text;
+ };
+type FrontendConfiguration = 
+ record {
+   associatedModelCanisterId: text;
+   owner: principal;
+   selectedModel: AvailableModels;
+ };
+type CreationCanister = 
+ service {
+   amiController: () -> (AuthRecordResult);
+   createCanister: (FrontendConfiguration) -> (FrontendCreationResult);
+   setMasterCanisterId: (text) -> (AuthRecordResult);
+   whoami: () -> (principal);
+ };
+type AvailableModels = 
+ variant {
+   Llama2_15M;
+   Llama2_260K;
+ };
+type AuthRecordResult = 
+ variant {
+   Err: ApiError;
+   Ok: AuthRecord;
+ };
+type AuthRecord = record {auth: text;};
+type ApiError = 
+ variant {
+   InvalidId;
+   Other: text;
+   Unauthorized;
+   ZeroAddress;
+ };
+service : () -> CreationCanister

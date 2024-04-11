@@ -10,8 +10,7 @@ export { idlFactory } from "./ctrlb_canister.did.js";
  * beginning in dfx 0.15.0
  */
 export const canisterId =
-  process.env.CANISTER_ID_CTRLB_CANISTER ||
-  process.env.CTRLB_CANISTER_CANISTER_ID;
+  process.env.CANISTER_ID_CTRLB_CANISTER;
 
 export const createActor = (canisterId, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });
@@ -40,4 +39,4 @@ export const createActor = (canisterId, options = {}) => {
   });
 };
 
-export const ctrlb_canister = createActor(canisterId);
+export const ctrlb_canister = canisterId ? createActor(canisterId) : undefined;

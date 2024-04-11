@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export interface AissemblyLineCanister {
   'amiController' : ActorMethod<[], AuthRecordResult>,
@@ -33,8 +34,9 @@ export interface CanisterInfo {
 export type CanisterType = { 'Frontend' : null } |
   { 'Model' : null };
 export interface ModelCreationRecord {
+  'newLlmCanisterId' : string,
+  'newCtlrbCanisterId' : string,
   'creationResult' : string,
-  'newCanisterId' : string,
 }
 export type ModelCreationResult = { 'Ok' : ModelCreationRecord } |
   { 'Err' : ApiError };
@@ -46,3 +48,5 @@ export interface UserCreationEntry {
   'modelCanister' : CanisterInfo,
 }
 export interface _SERVICE extends AissemblyLineCanister {}
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

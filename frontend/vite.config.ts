@@ -63,7 +63,7 @@ const canisterDefinitions = Object.entries(canisterIds).reduce(
     /* [`process.env.${key.toUpperCase()}_CANISTER_ID`]: isDev
       ? JSON.stringify(val.local)
       : JSON.stringify(val.ic), */
-    [`process.env.${key.toUpperCase()}_CANISTER_ID`]: JSON.stringify(val[networkName]),
+    [`process.env.CANISTER_ID_${key.toUpperCase()}`]: JSON.stringify(val[networkName]),
   }),
   {},
 );
