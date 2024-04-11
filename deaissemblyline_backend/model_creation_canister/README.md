@@ -83,11 +83,11 @@ dfx canister call model_creation_canister reset_control_canister_wasm
 dfx ledger fabricate-cycles --canister model_creation_canister
 
 ## Call endpoints on created control canister
-## Note: use canister_id printed by testCreateCanister
-dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai health
-dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai amiController
-dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai isWhitelistLogicOk
-dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai ready
-dfx canister call gf4a7-g4aaa-aaaaa-qaarq-cai amiWhitelisted
+## Note: use newCtlrbCanisterId printed by testCreateCanister
+dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai health
+dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai amiController
+dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai isWhitelistLogicOk
+dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai ready
+dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai amiWhitelisted
 dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai Inference '(record {prompt="Joe went swimming in the pool"; steps=30; temperature=0.1; topp=0.9; rng_seed=0;})'
 ```
