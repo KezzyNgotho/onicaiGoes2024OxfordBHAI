@@ -60,18 +60,29 @@ class SyncStream(NetworkStream):
             # ENDPATCH
             self._sock.settimeout(timeout)
             return self._sock.recv(max_bytes)
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------
 
+# ========================================================================
+# Upload the ctrlb_canister
+python -m scripts.upload_control_canister --network local --canister model_creation_canister --wasm files/ctrlb_canister.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 
+# ========================================================================
+# To upload the small 260K model
 python -m scripts.upload --network local --canister model_creation_canister --model files/stories260K.bin --tokenizer files/tok512.bin --model_id Llama2_260K --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 
-python -m scripts.upload_control_canister --network local --canister model_creation_canister --wasm files/ctrlb_canister.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
+# ========================================================================
+# To upload the 15M model
+python -m scripts.upload --network local --canister model_creation_canister --model files/stories15Mtok4096.bin --tokenizer files/tok4096.bin --model_id Llama2_15M --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
+
 ```
 
 ### Test canister creation
 
 ```bash
+# To test 260K model
 dfx canister call model_creation_canister testCreateCanister
+# To test 15M model
+dfx canister call model_creation_canister testCreateCanister15M
 
 ## In case the entry for a model has to be deleted (use with caution):
 dfx canister call model_creation_canister reset_model_creation_artefacts '("Llama2_260K")'

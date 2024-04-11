@@ -329,6 +329,17 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
         let result = await createCanister(config);
         return result;
     };
+    public shared (msg) func testCreateCanister15M() : async Types.ModelCreationResult {
+        /* if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        }; */
+        let config = {
+            selectedModel : Types.AvailableModels = #Llama2_15M;
+            owner : Principal = msg.caller;
+        };
+        let result = await createCanister(config);
+        return result;
+    };
     // -------------------------------------------------------------------------------
     // Canister upgrades
 
