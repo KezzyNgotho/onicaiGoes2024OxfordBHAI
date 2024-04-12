@@ -15,13 +15,13 @@
 </div>
 
 <!-- Detailed Information -->
-<section id="about-detail" class="py-16 text-center bg-gray-100 dark:bg-gray-900">
-  <h3 class="text-3xl mb-4 text-gray-800 dark:text-gray-200">DeAIssembly Line</h3>
+<!-- <section id="about-detail" class="py-16 text-center bg-gray-100 dark:bg-gray-900">
+  <h3 class="text-3xl mb-4 text-gray-800 dark:text-gray-200"></h3>
   <img src="./BitcoinDonationApp_img.png" alt="The Bitcoin Donation App" class="mx-auto mb-4 max-w-md h-auto">
   <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">Easily create and host</p>
   <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">Generative AI</p>
   <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">With decentralized technology (Internet Computer and your personal devices)</p>
-</section>
+</section> -->
 
 <Footer />
 

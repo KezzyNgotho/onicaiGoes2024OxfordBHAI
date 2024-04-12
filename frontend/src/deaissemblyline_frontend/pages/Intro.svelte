@@ -13,7 +13,7 @@
   <div class="p-12 flex flex-col justify-center bg-gray-100 dark:bg-gray-700">
     <h3 class="text-4xl text-gray-600 dark:text-gray-300 mb-8">Your Personal On-Chain AI</h3>
     <p class="mb-8 text-lg text-gray-500 dark:text-gray-400">
-      Create your own on-chain AI and deploy it to the Internet Computer with one click.
+      Create your first own on-chain AI and deploy it to the Internet Computer with one click.
     </p>
     <button type="button" id='createButton' on:click|preventDefault={() => push("#/create")} class="w-48 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-5 py-2.5 text-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Start Here</button>
   </div>
