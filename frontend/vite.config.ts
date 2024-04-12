@@ -80,31 +80,26 @@ const pwaManifest = {
   theme_color: "#3367D6",
   icons: [
     {
-      src: './BitcoinDonationApp_img192.png',
+      src: './onChainAI_img192.png',
       sizes: '192x192',
       type: 'image/png',
     },
     {
-      src: './BitcoinDonationApp_img512.png',
+      src: './onChainAI_img512.png',
       sizes: '512x512',
       type: 'image/png',
     },
     {
-      src: './BitcoinDonationApp_img512.png',
+      src: './onChainAI_img512.png',
       sizes: '512x512',
       type: 'image/png',
       purpose: 'any'
     },
     {
-      src: './BitcoinDonationApp_img512.png',
+      src: './onChainAI_img512.png',
       sizes: '512x512',
       type: 'image/png',
       purpose: 'maskable'
-    },
-    {
-      src: "./BitcoinDonationApp_img721.png",
-      type: "image/png",
-      sizes: "721x721"
     },
   ],
 };

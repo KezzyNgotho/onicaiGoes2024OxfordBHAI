@@ -36,9 +36,9 @@
         <img src="/images/deaissemblyLine_logo_app.jpg" class="h-9 mr-8" alt="logo" />
       </a>
       <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-        <li>
+        <!-- <li>
           <a href="#/create" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Create</a>
-        </li>
+        </li> -->
         <li>
           <a href="#/learn" class="mr-4 hover:underline md:mr-6 dark:hover:text-blue-300">Learn</a>
         </li>

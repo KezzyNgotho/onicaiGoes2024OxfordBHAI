@@ -14,7 +14,7 @@
   const routes = {
     // Exact path (with /# in front of route)
     "/": Intro,
-    "/create": CreateAi,
+    //"/create": CreateAi,
     "/learn": LearnWithAI,
     "/about": About, //e.g. URL: https://....ic0.app/#/about
     // Catch-all (this is optional, but if present it must be the last)

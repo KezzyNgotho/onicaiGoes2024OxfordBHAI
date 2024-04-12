@@ -81,10 +81,10 @@
     console.log("######################################Debug getChatModelResponse vectorDbSearchToolResponse ", vectorDbSearchToolResponse);
     console.log("######################################Debug getChatModelResponse vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase ", vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase);
     console.log("######################################Debug getChatModelResponse vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length ", vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length);
-    let additionalContentToProvide = " Additional input from previous user chats (ignore this if not relevant): ";
+    let additionalContentToProvide = " Additional official UN resources: (use these if possible but ignore this if not relevant): ";
     for (let index = 0; index < vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length; index++) {
       const additionalEntry = vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase[index];
-      additionalContentToProvide += " Additional official UN resources: ";
+      additionalContentToProvide += "  ";
       additionalContentToProvide += additionalEntry.content;  
     };
     console.log("######################################Debug getChatModelResponse additionalContentToProvide ", additionalContentToProvide);
@@ -104,6 +104,9 @@
 </script>
 
 <section id="chat-model-section" class="py-7 space-y-6 items-center text-center bg-slate-100">
+  <h1 class="mb-4 text-xl font-bold tracking-tight leading-none text-gray-900 md:text-xl lg:text-xl dark:text-white">
+    Your AI Assistant to Learn With</h1>
+  <h3>Discuss the United Nations' anti-corruption actions and any other topics you're interested in.</h3>
   {#if chatModelDownloaded}
     <h3 id='chatModelStatusSubtext'>Success! You can chat with your AI Assistant now.</h3>
     <p id="generate-label"> </p>

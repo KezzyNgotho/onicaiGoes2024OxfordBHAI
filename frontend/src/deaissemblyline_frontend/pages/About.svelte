@@ -6,7 +6,7 @@
 <Topnav />
 
 <!-- Main Hero Section -->
-<div class="relative flex flex-col items-center justify-center h-screen w-full text-center py-20 bg-cover bg-center" style="background-image: url('./BitcoinDonationApp_banner.png');">
+<div class="relative flex flex-col items-center justify-center h-screen w-full text-center py-20 bg-cover bg-center" style="background-image: url('./onChainAi_banner.webp');">
   <div class="relative z-10">
     <h1 class="text-4xl font-bold text-white dark:text-gray-200">Thank you for using this app</h1>
     <p class="mt-4 text-xl text-gray-200 dark:text-gray-400">It's your pathway into decentralized AI - including creating your own and learning with it.</p>
@@ -15,13 +15,13 @@
 </div>
 
 <!-- Detailed Information -->
-<!-- <section id="about-detail" class="py-16 text-center bg-gray-100 dark:bg-gray-900">
-  <h3 class="text-3xl mb-4 text-gray-800 dark:text-gray-200"></h3>
-  <img src="./BitcoinDonationApp_img.png" alt="The Bitcoin Donation App" class="mx-auto mb-4 max-w-md h-auto">
-  <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">Easily create and host</p>
-  <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">Generative AI</p>
-  <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">With decentralized technology (Internet Computer and your personal devices)</p>
-</section> -->
+<section id="about-detail" class="py-16 text-center bg-gray-100 dark:bg-gray-900">
+  <h3 class="text-3xl mb-4 text-gray-800 dark:text-gray-200">UN Anti-Corruption + AI</h3>
+  <img src="./onChainAi_about_img.webp" alt="AI App to learn about UN Anti-Corruption" class="mx-auto mb-4 max-w-md h-auto">
+  <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">Learn about the United Nations' anti-corruption actions</p>
+  <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">By chatting with an AI assistant</p>
+  <p class="text-lg mb-4 text-gray-600 dark:text-gray-400">That is running directly on your personal device and keeps all your data there private</p>
+</section>
 
 <Footer />
 
