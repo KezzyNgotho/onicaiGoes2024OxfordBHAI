@@ -3,6 +3,7 @@ import type { Principal } from "@dfinity/principal";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import { StoicIdentity } from "ic-stoic-identity";
 import { AuthClient } from "@dfinity/auth-client";
+import UAParser from 'ua-parser-js';
 import {
   donation_tracker_canister,
   createActor as createBackendCanisterActor,
@@ -19,6 +20,7 @@ import {
   ctrlb_canister,
   createActor as createModelBackendCanisterActor,
 } from "../declarations/ctrlb_canister";
+import { getDefaultAiModelId } from "./helpers/ai_model_helpers";
 
 export let donationTrackerCanisterDefintion = {
   donation_tracker_canister,
@@ -26,9 +28,6 @@ export let donationTrackerCanisterDefintion = {
   backendCanisterId,
   backendIdlFactory,
 };
-
-console.log("##############Debug store backendCanisterId ", backendCanisterId);
-console.log("##############Debug store aissemblyBackendCanisterId ", aissemblyBackendCanisterId);
 
 //__________Local vs Mainnet Development____________
 /* export const HOST =
@@ -86,6 +85,37 @@ currentAiCreationObject.subscribe((value) => aiCreationObject = value);
 export let supportedAiModelTypes = writable(
   ["#Llama2_260K", "#Llama2_15M"]
 );
+
+// Variables for AI chat
+// User's device and browser information
+export const webGpuSupportedBrowsers = "Google Chrome, Mircosoft Edge";
+const uaParser = new UAParser();
+const result = uaParser.getResult();
+export const device = result.device.model || 'Unknown Device';
+export let deviceType = result.device.type; // Will return 'mobile' for mobile devices, 'tablet' for tablets, and undefined for desktops
+let osName = result.os.name; // Get the operating system name
+
+if (!deviceType) {
+  deviceType = 'desktop';
+} else if (deviceType === 'mobile' || deviceType === 'tablet') {
+  if (osName === 'Android') {
+    //deviceType = 'Android ' + deviceType; // e.g., 'Android mobile'
+    deviceType = 'Android';
+  } else if (osName === 'iOS') {
+    //deviceType = 'iOS ' + deviceType; // e.g., 'iOS mobile'
+    deviceType = 'iOS';
+  };
+};
+export const browser = result.browser.name || 'Unknown Browser';
+// @ts-ignore
+export const supportsWebGpu = navigator.gpu !== undefined;
+
+export let chatModelGlobal = writable(null);
+export let chatModelDownloadedGlobal = writable(false);
+export let activeChatGlobal = writable(null);
+export let selectedAiModelId = writable(getDefaultAiModelId(deviceType === 'Android'));
+
+export let vectorStore = writable(null);
 
 // Global variable to access generally available currencies as payment types
 export let supportedPaymentTypes = writable(

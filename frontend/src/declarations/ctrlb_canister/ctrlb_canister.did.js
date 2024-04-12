@@ -21,6 +21,11 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : NFTOutputRecord,
     'Err' : ApiError,
   });
+  const StatusCodeRecord = IDL.Record({ 'status_code' : IDL.Nat16 });
+  const StatusCodeRecordResult = IDL.Variant({
+    'Ok' : StatusCodeRecord,
+    'Err' : ApiError,
+  });
   const NFT = IDL.Record({ 'token_id' : IDL.Text });
   const NFTOutputRecordsArray = IDL.Vec(NFTOutputRecord);
   const NFTOutputRecordsArrayResult = IDL.Variant({
@@ -28,15 +33,12 @@ export const idlFactory = ({ IDL }) => {
     'Err' : ApiError,
   });
   const CanisterIDRecord = IDL.Record({ 'canister_id' : IDL.Text });
-  const StatusCodeRecord = IDL.Record({ 'status_code' : IDL.Nat16 });
-  const StatusCodeRecordResult = IDL.Variant({
-    'Ok' : StatusCodeRecord,
-    'Err' : ApiError,
-  });
   const CtrlbCanister = IDL.Service({
     'Inference' : IDL.Func([Prompt], [NFTOutputRecordResult], []),
+    'NFTAddStartPrompt' : IDL.Func([Prompt], [StatusCodeRecordResult], []),
     'NFTGetStories' : IDL.Func([NFT], [NFTOutputRecordsArrayResult], []),
     'NFTGetStory' : IDL.Func([NFT], [NFTOutputRecordResult], []),
+    'NFTSetTokenIds' : IDL.Func([], [StatusCodeRecordResult], []),
     'NFTUpdate' : IDL.Func([NFT], [NFTOutputRecordResult], []),
     'add_llm_canister_id' : IDL.Func(
         [CanisterIDRecord],

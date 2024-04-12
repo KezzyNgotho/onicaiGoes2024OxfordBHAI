@@ -4,12 +4,15 @@
   import Button from "./Button.svelte";
   import ChatBox from "./ChatBox.svelte";
   import { modelConfig } from "../helpers/gh-config";
+  import { getSearchVectorDbTool } from "../helpers/vector_database";
 
   const workerPath = './worker.ts';
 
   let chatModelDownloadInProgress = false;
   let chatModelDownloaded = false;
   chatModelDownloadedGlobal.subscribe((value) => chatModelDownloaded = value);
+
+  let vectorDbSearchTool;
 
   // Debug Android
   //let debugOutput = "";
@@ -55,6 +58,9 @@
       setLabel("init-label", report.text);
     });
     await $chatModelGlobal.reload($selectedAiModelId, undefined, modelConfig);
+
+    vectorDbSearchTool = getSearchVectorDbTool();
+
     $chatModelDownloadedGlobal = true;
     chatModelDownloadInProgress = false;
   };
@@ -64,7 +70,29 @@
   };
 
   async function getChatModelResponse(prompt, progressCallback = generateProgressCallback) {
+    console.log("######################################Debug getChatModelResponse prompt ", prompt);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchTool ", vectorDbSearchTool);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchTool.name ", vectorDbSearchTool.name);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchTool.description ", vectorDbSearchTool.description);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchTool.func ", vectorDbSearchTool.func);
+    let vectorDbSearchToolResponse = await vectorDbSearchTool.func(prompt);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchTool.func() ", vectorDbSearchToolResponse);
+    vectorDbSearchToolResponse = JSON.parse(vectorDbSearchToolResponse);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchToolResponse ", vectorDbSearchToolResponse);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase ", vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase);
+    console.log("######################################Debug getChatModelResponse vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length ", vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length);
+    let additionalContentToProvide = " Additional input from previous user chats (ignore this if not relevant): ";
+    for (let index = 0; index < vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length; index++) {
+      const additionalEntry = vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase[index];
+      additionalContentToProvide += " Additional official UN resources: ";
+      additionalContentToProvide += additionalEntry.content;  
+    };
+    console.log("######################################Debug getChatModelResponse additionalContentToProvide ", additionalContentToProvide);
+    prompt = "User Prompt: " + prompt + additionalContentToProvide;
+    console.log("######################################Debug getChatModelResponse prompt full ", prompt);
+
     const reply = await $chatModelGlobal.generate(prompt, progressCallback);
+    console.log("#################################Debug getChatModelResponse reply ", reply);
     return reply;
   };
 
