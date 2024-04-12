@@ -97,15 +97,6 @@ dfx canister call model_creation_canister testCreateCanister
 # To test 15M model
 dfx canister call model_creation_canister testCreateCanister15M
 
-## In case the entry for a model has to be deleted (use with caution):
-dfx canister call model_creation_canister reset_model_creation_artefacts '("Llama2_260K")'
-
-## In case the control canister wasm has to be reset (use with caution):
-dfx canister call model_creation_canister reset_control_canister_wasm
-
-## Might come in handy during local testing
-dfx ledger fabricate-cycles --canister model_creation_canister
-
 ## Call endpoints on created control canister
 ## Note: use newCtlrbCanisterId printed by testCreateCanister
 dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai health
@@ -114,4 +105,15 @@ dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai isWhitelistLogicOk
 dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai ready
 dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai amiWhitelisted
 dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai Inference '(record {prompt="Joe went swimming in the pool"; steps=30; temperature=0.1; topp=0.9; rng_seed=0;})'
+
+# ----be carefull with these START ---
+## In case the entry for a model has to be deleted (use with caution):
+dfx canister call model_creation_canister reset_model_creation_artefacts '("Llama2_260K")'
+
+## In case the control canister wasm has to be reset (use with caution):
+dfx canister call model_creation_canister reset_control_canister_wasm
+
+## Might come in handy during local testing
+dfx ledger fabricate-cycles --canister model_creation_canister
+# ----be carefull with these END ---
 ```
