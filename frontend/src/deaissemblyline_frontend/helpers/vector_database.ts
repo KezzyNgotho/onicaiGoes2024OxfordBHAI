@@ -142,7 +142,7 @@ const searchEmbeddings = async (text: string) => {
       await generateEmbeddings();
     };
 
-    const searchResult = await vectorStoreState.similaritySearch(text, 2); // returns 2 entries
+    const searchResult = await vectorStoreState.similaritySearch(text, 1); // returns 1 entry
     console.log("Debug searchEmbeddings searchResult ", searchResult);
 
     /* results.forEach((r) => {
@@ -161,7 +161,7 @@ const searchEmbeddings = async (text: string) => {
 const getDataEntries = async () => {
   console.log("Debug getDataEntries");
   const dataEntries = [];
-  const knowledgePages : [] = getResourceAsArray(1);
+  const knowledgePages : [] = await getResourceAsArray(1);
   for (let index = 0; index < knowledgePages.length; index++) {
     const dataEntry = {
       id: index,
