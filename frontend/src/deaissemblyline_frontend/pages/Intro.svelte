@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-0">
   <div class="p-12 flex flex-col justify-center bg-gray-100 dark:bg-gray-700">
     <h3 class="text-4xl text-gray-600 dark:text-gray-300 mb-8">Your Personal On-Chain AI</h3>
     <p class="mb-8 text-lg text-gray-500 dark:text-gray-400">
@@ -28,24 +28,24 @@
     <button type='button' id='createButton' on:click|preventDefault={() => push("#/create")} class="w-48 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-5 py-2.5 text-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Start Here</button>
   </div>
   <div class="bg-amber-200 dark:bg-amber-600">
-    <img class="w-full" src="/images/bitcoinDonationApp_intro_explore.png" alt="Create Personal AI graphic" />
+    <img class="w-full" src="/images/onChainAi_intro_createPersonalAI.webp" alt="Create Personal AI graphic" />
   </div>
-</div> -->
+</div>
 
-<!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-0">
   <div class="bg-yellow-400 dark:bg-yellow-600">
-    <img class="w-full" src="/images/bitcoinDonationApp_intro_recipients.png" alt="Discover Recipients graphic" />
+    <img class="w-full" src="/images/onChainAi_intro_discover.webp" alt="Discover On-Chain AI" />
   </div>
   <div class="p-12 flex flex-col justify-center bg-gray-100 dark:bg-gray-700">
     <h3 class="text-4xl text-gray-600 dark:text-gray-300 mb-8">
-      Discover Causes Worth Donating For
+      Discover Decentralized AI
     </h3>
     <p class="mb-8 text-lg text-gray-500 dark:text-gray-400">
-      Find out who the schools and students you can donate to are.
+      Find out how we push decentralized AI forward and how it matters for you.
     </p>
-    <button type="button" id='recipientsButton' on:click|preventDefault={() => push("#/recipients")} class="w-48 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-5 py-2.5 text-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View Recipients</button>
+    <button type="button" id='discoverButton' on:click|preventDefault={() => push("#/about")} class="w-48 text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-5 py-2.5 text-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Discover</button>
   </div>
-</div> -->
+</div>
 
 <div class='clearfix'></div>
 
