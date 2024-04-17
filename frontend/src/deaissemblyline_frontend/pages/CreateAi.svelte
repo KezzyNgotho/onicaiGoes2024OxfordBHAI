@@ -7,7 +7,7 @@
     import { onMount } from "svelte";
 
 	let progressBar;
-	let steps = ['Selection', 'Info', 'CreateModel', 'ModelConfirmation', 'ChatUserInterface'];
+	let steps = ['Select', 'Info', 'Create', 'Result', 'Use'];
 	let currentActive = $currentAiCreationObject.currentActiveFormStepIndex;
 	currentAiCreationObject.subscribe((value) => currentActive = value.currentActiveFormStepIndex);
 	
