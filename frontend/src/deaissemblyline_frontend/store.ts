@@ -174,6 +174,7 @@ type State = {
   isAuthed: "plug" | "stoic" | "nfid" | "bitfinity" | "internetidentity" |null;
   backendActor: typeof donation_tracker_canister;
   aissemblyBackendActor: typeof aissembly_line_canister;
+  userModelBackendActor: typeof ctrlb_canister;
   principal: Principal;
   accountId: string;
   error: string;
@@ -188,6 +189,7 @@ const defaultState: State = {
   aissemblyBackendActor: createAissemblyBackendCanisterActor(aissemblyBackendCanisterId, {
     agentOptions: { host: HOST },
   }),
+  userModelBackendActor: null,
   principal: null,
   //principal: Principal.fromText("2vxsx-fae"),
   accountId: "",
@@ -620,15 +622,24 @@ export const createStore = ({
   };
 
   const getActorForModelBackendCanister = async () => {
+    if (globalState.userModelBackendActor) {
+      return globalState.userModelBackendActor;
+    };
     if (authClient) {
       const identity = await authClient.getIdentity();
-      const modelBackendActor = createModelBackendCanisterActor(aiCreationObject.createdBackendCanisterId, {
+      const userModelBackendActor = createModelBackendCanisterActor(aiCreationObject.createdBackendCanisterId, {
         agentOptions: {
           identity,
           host: HOST,
         },
       });
-      return modelBackendActor;
+      update((state) => {
+        return {
+          ...state,
+          userModelBackendActor,
+        };
+      });
+      return userModelBackendActor;
     };
     return null;    
   };

@@ -213,7 +213,7 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
         };        
     };
 
-    public shared (msg) func getUserCanistersEntry() : async Types.UserCanistersEntryResult {
+    public query (msg) func getUserCanistersEntry() : async Types.UserCanistersEntryResult {
         if (Principal.isAnonymous(msg.caller)) {
             return #Err(#Unauthorized);
         };
