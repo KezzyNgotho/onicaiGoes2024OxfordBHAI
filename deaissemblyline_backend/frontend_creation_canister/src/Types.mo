@@ -34,19 +34,18 @@ module Types {
 
     public type FrontendConfiguration = {
         selectedModel : AvailableModels;
-        owner: Principal;
+        owner : Principal;
         associatedModelCanisterId : Text;
     };
 
     public type FrontendCreationRecord = {
         creationResult : Text;
-        newCtlrbCanisterId : Text;
-        newLlmCanisterId : Text;
+        newCanisterId : Text;
     };
 
     public type FrontendCreationResult = Result<FrontendCreationRecord, ApiError>;
 
-// IC Management Canister types
+    // IC Management Canister types
     public type canister_id = Principal;
     public type canister_settings = {
         controllers : ?[Principal];
