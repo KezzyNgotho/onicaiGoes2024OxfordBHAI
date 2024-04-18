@@ -109,6 +109,9 @@
   <h3>Discuss the United Nations' anti-corruption actions and any other topics you're interested in.</h3>
   {#if chatModelDownloaded}
     <h3 id='chatModelStatusSubtext'>Success! You can chat with your AI Assistant now.</h3>
+    <Button id="newChatButton"
+        class="bg-slate-100 text-slate-900 hover:bg-slate-200 hover:text-slate-900"
+        on:click={showNewChat}>New Chat</Button>
     <p id="generate-label"> </p>
     {#key $activeChatGlobal}  <!-- Element to rerender everything inside when activeChat changes (https://www.webtips.dev/force-rerender-components-in-svelte) -->
       <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} />

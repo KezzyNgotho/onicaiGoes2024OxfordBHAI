@@ -39,9 +39,27 @@ export const getUnConventionAgainstCorruption = async () => {
         const pagePromise = pdf.getPage(pageNum).then(page => {
           return page.getTextContent().then(textContent => {
             // Filter text items to remove those that contain only spaces or punctuation
-            return textContent.items
-              .map(item => item.str)
-              .filter(str => str.trim().length > 0 && !/^\p{P}+$/u.test(str));
+            const filteredTextItems = textContent.items
+                .map(item => item.str)
+                .filter(str => str.trim().length > 0 && !/^\p{P}+$/u.test(str));
+
+            // Concatenate and split text to ensure each entry is under 500 characters (the LLM's context window size might otherwise not be able to handle it)
+            let combinedText = '';
+            const pageTexts = [];
+
+            for (const text of filteredTextItems) {
+              if (combinedText.length + text.length > 1300) {
+                pageTexts.push(combinedText);
+                combinedText = text;
+              } else {
+                combinedText += (combinedText.length > 0 ? ' ' : '') + text;
+              };
+            };
+            if (combinedText.length > 0) {
+              pageTexts.push(combinedText);
+            };
+            console.log('pageTexts: ', pageTexts);
+            return pageTexts.flat();
           });
         });
         pageTextPromises.push(pagePromise);
