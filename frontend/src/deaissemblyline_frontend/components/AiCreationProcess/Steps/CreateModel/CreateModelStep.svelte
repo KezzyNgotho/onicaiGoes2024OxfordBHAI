@@ -50,11 +50,36 @@
       modelCreationError = true;
     } else {
       // @ts-ignore
-      createdModelCanisterId = createModelResponse.Ok.newCanisterId;
+      createdModelCanisterId = createModelResponse.Ok.newCtlrbCanisterId;
       $currentAiCreationObject.createdBackendCanisterId = createdModelCanisterId;
       modelCreationSuccess = true;
     };
     modelCreationInProgress = false;
+  };
+
+  let userAlreadyHasModel = false;
+  let userModelCanister;
+
+  const loadExistingUserModel = async () => {
+    console.log("Debug loadExistingUserModel");
+    if (!$store.isAuthed) {
+      return;
+    };
+    // DeAIssembly Canister Integration
+    const getUserModelResponse = await $store.aissemblyBackendActor.getUserCanistersEntry();
+    console.log("Debug loadExistingUserModel getUserModelResponse ", getUserModelResponse);
+    // @ts-ignore
+    if (getUserModelResponse.Err) {
+      userAlreadyHasModel = false;
+    } else {
+      userAlreadyHasModel = true;
+      // @ts-ignore
+      userModelCanister = getUserModelResponse.Ok.modelCanister;
+      console.log("Debug loadExistingUserModel userModelCanister ", userModelCanister);
+      console.log("Debug loadExistingUserModel userModelCanister.canisterAddress ", userModelCanister.canisterAddress);
+      createdModelCanisterId = userModelCanister.canisterAddress;
+      $currentAiCreationObject.createdBackendCanisterId = createdModelCanisterId;
+    };
   };
 
 </script>
@@ -63,7 +88,16 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
     <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
       Create Your AI model</h1>
-    {#if modelCreationSuccess}
+    <p hidden>{loadExistingUserModel()}</p>
+    {#if userAlreadyHasModel}
+      <div class="text-gray-800 dark:text-gray-200">
+        <h3>AI Model Ready</h3>
+        <p>Awesome! You've already created a model on your previous visit. Let's go ahead and us it.</p>
+        <span class="inline-block break-all">
+          <p>The canister Id is {createdModelCanisterId}.</p>
+        </span>
+      </div>
+    {:else if modelCreationSuccess}
       <div class="text-gray-800 dark:text-gray-200">
         <h3>AI Model Created</h3>
         <span class="inline-block break-all">
@@ -89,7 +123,7 @@
             <p>Please note that you may only create your AI model if you log in (such that you become its owner).</p>
           </div>
         {:else}
-          <p class="mt-4">Great, everything is in place! If you're ready, you can finalize the donation now.</p>
+          <p hidden>{loadExistingUserModel()}</p>
           {#if modelCreationInProgress}
             <button disabled class="opacity-50 cursor-not-allowed bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dark:bg-blue-600 dark:hover:bg-blue-700">
               Create My AI!

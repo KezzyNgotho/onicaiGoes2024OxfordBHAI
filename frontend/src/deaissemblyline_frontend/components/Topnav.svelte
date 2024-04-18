@@ -37,10 +37,10 @@
     <div class="flex items-center">
       <ul class="flex flex-row font-medium mt-0 mr-6 space-x-8 text-sm">
         <li>
-          <a href="#/create" class="text-gray-300 dark:text-white hover:underline" aria-current="page">Create</a>
+          <a href="#/learn" class="text-gray-200 dark:text-white hover:underline">Learn</a>
         </li>
         <li>
-          <a href="#/learn" class="text-gray-200 dark:text-white hover:underline">Learn</a>
+          <a href="#/create" class="text-gray-300 dark:text-white hover:underline" aria-current="page">Create</a>
         </li>
         <li>
           <a href="#/about" class="text-gray-200 dark:text-white hover:underline">About</a>

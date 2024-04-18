@@ -1,0 +1,17 @@
+{
+  "deaissemblyline_frontend": {
+    "ic": "6tht4-syaaa-aaaai-acriq-cai"
+  },
+  "aissembly_line_canister": {
+    "ic": "6ugvi-7aaaa-aaaai-acria-cai",
+    "local": "be2us-64aaa-aaaaa-qaabq-cai"
+  },
+  "donation_tracker_canister": {
+    "ic": "fj5jn-2qaaa-aaaag-acmfq-cai",
+    "local": "be2us-64aaa-aaaaa-qaabq-cai"
+  },
+  "internet_identity": {
+    "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai",
+    "local": "by6od-j4aaa-aaaaa-qaadq-cai"
+  }
+}

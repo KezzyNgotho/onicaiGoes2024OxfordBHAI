@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export type ApiError = { 'InvalidId' : null } |
   { 'ZeroAddress' : null } |
@@ -8,8 +9,10 @@ export type ApiError = { 'InvalidId' : null } |
 export interface CanisterIDRecord { 'canister_id' : string }
 export interface CtrlbCanister {
   'Inference' : ActorMethod<[Prompt], NFTOutputRecordResult>,
+  'NFTAddStartPrompt' : ActorMethod<[Prompt], StatusCodeRecordResult>,
   'NFTGetStories' : ActorMethod<[NFT], NFTOutputRecordsArrayResult>,
   'NFTGetStory' : ActorMethod<[NFT], NFTOutputRecordResult>,
+  'NFTSetTokenIds' : ActorMethod<[], StatusCodeRecordResult>,
   'NFTUpdate' : ActorMethod<[NFT], NFTOutputRecordResult>,
   'add_llm_canister_id' : ActorMethod<
     [CanisterIDRecord],
@@ -49,3 +52,5 @@ export interface StatusCodeRecord { 'status_code' : number }
 export type StatusCodeRecordResult = { 'Ok' : StatusCodeRecord } |
   { 'Err' : ApiError };
 export interface _SERVICE extends CtrlbCanister {}
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

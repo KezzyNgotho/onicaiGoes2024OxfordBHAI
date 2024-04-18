@@ -16,9 +16,18 @@ import Cycles "mo:base/ExperimentalCycles";
 import Types "Types";
 import Utils "Utils";
 
-actor class CreationCanister(_master_canister_id : Text) = this {
+actor class CreationCanister() = this {
 
-    let MASTER_CANISTER_ID : Text = _master_canister_id;
+    var MASTER_CANISTER_ID : Text = ""; // Corresponds to DeAIssembly Backend canister
+
+    public shared (msg) func setMasterCanisterId(_master_canister_id : Text) : async Types.AuthRecordResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+        MASTER_CANISTER_ID := _master_canister_id;
+        let authRecord = { auth = "You set the master canister for this canister." };
+        return #Ok(authRecord);
+    };
 
     // -------------------------------------------------------------------------------
     // Orthogonal Persisted Data storage

@@ -35,6 +35,7 @@ export interface ModelCreationCanister {
   'createCanister' : ActorMethod<[ModelConfiguration], ModelCreationResult>,
   'reset_control_canister_wasm' : ActorMethod<[], FileUploadResult>,
   'reset_model_creation_artefacts' : ActorMethod<[string], FileUploadResult>,
+  'setMasterCanisterId' : ActorMethod<[string], AuthRecordResult>,
   'testCreateCanister' : ActorMethod<[], ModelCreationResult>,
   'upload_control_wasm_bytes_chunk' : ActorMethod<
     [Uint8Array | number[]],

@@ -10,8 +10,7 @@ export { idlFactory } from "./donation_tracker_canister.did.js";
  * beginning in dfx 0.15.0
  */
 export const canisterId =
-  process.env.CANISTER_ID_DONATION_TRACKER_CANISTER ||
-  process.env.DONATION_TRACKER_CANISTER_CANISTER_ID;
+  process.env.CANISTER_ID_DONATION_TRACKER_CANISTER;
 
 export const createActor = (canisterId, options = {}) => {
   const agent = options.agent || new HttpAgent({ ...options.agentOptions });
@@ -40,4 +39,4 @@ export const createActor = (canisterId, options = {}) => {
   });
 };
 
-export const donation_tracker_canister = createActor(canisterId);
+export const donation_tracker_canister = canisterId ? createActor(canisterId) : undefined;

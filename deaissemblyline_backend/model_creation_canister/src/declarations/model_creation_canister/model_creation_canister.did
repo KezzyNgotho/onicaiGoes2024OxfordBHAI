@@ -18,6 +18,7 @@ type ModelCreationCanister =
    createCanister: (ModelConfiguration) -> (ModelCreationResult);
    reset_control_canister_wasm: () -> (FileUploadResult);
    reset_model_creation_artefacts: (text) -> (FileUploadResult);
+   setMasterCanisterId: (text) -> (AuthRecordResult);
    testCreateCanister: () -> (ModelCreationResult);
    upload_control_wasm_bytes_chunk: (vec nat8) -> (FileUploadResult);
    upload_model_bytes_chunk: (text, vec nat8) -> (FileUploadResult);
@@ -66,4 +67,4 @@ type ApiError =
    Unauthorized;
    ZeroAddress;
  };
-service : (text) -> ModelCreationCanister
+service : () -> ModelCreationCanister

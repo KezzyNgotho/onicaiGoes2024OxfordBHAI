@@ -42,10 +42,19 @@ type BitcoinAddress = text;
 type BasicBitcoin = 
  service {
    amiController: () -> (AuthRecordResult);
+   /// Returns the balance of the given Bitcoin address.
    get_balance: (BitcoinAddress) -> (Satoshi__1);
+   /// Returns the 100 fee percentiles measured in millisatoshi/vbyte.
+   /// Percentiles are computed from the last 10,000 transactions (if available).
    get_current_fee_percentiles: () -> (vec MillisatoshiPerVByte);
+   /// Returns the P2PKH address of this canister at a specific derivation path.
    get_p2pkh_address: () -> (BitcoinAddress);
+   /// Returns the UTXOs of the given Bitcoin address.
    get_utxos: (BitcoinAddress) -> (GetUtxosResponse);
+   /// Sends the given amount of bitcoin from this canister to the given address.
+   /// Only controllers of this canister allowed to call.
+   /// - Note that the donation_tracker_canister will be a controller.
+   /// Returns a SendRecordResult, containing the transaction ID
    send: (SendRequest) -> (SendRecordResult);
    whoami: () -> (principal);
  };

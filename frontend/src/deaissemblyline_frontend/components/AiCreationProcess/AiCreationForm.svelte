@@ -14,15 +14,15 @@
 </script>
 
 <form class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-12 text-center max-w-full mx-auto" on:submit={handleSubmit}>
-	{#if active_step == 'Selection'}
+	{#if active_step == 'Select'}
 		<SelectionStep />
 	{:else if active_step == 'Info'}
 		<InfoStep />
-	{:else if active_step == 'CreateModel'}
+	{:else if active_step == 'Create'}
 		<CreateModelStep />
-    {:else if active_step == 'ModelConfirmation'}
+    {:else if active_step == 'Result'}
   		<ModelConfirmationStep />
-	{:else if active_step == 'ChatUserInterface'}
+	{:else if active_step == 'Use'}
 		<ChatUserInterfaceStep />
 	{/if}
 </form>

@@ -133,21 +133,26 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                 // Verify that the user hasn't created any canisters yet (only one canister pair per user is allowed)
                 let verifyUserRequestResult = verifyUserRequest(msg.caller, #Model);
                 if (not verifyUserRequestResult) {
-                    return #Err(#Unauthorized);
+                    return #Err(#Other("Your request could not be verified. Please note that only one canister pair per user may be created."));
+                    //return #Err(#Unauthorized);
                 };
                 let modelCanisterConfiguration : Types.ModelConfiguration = {
                     selectedModel : Types.AvailableModels = defaultSelectedModel;
                     owner: Principal = msg.caller;
                 };
                 let createCanisterResult : Types.ModelCreationResult = await modelCreationCanister.createCanister(modelCanisterConfiguration);
+                
                 switch (createCanisterResult) {
-                    case (#Err(createCanisterError)) { return createCanisterResult; };
+                    case (#Err(createCanisterError)) {
+                        //return #Err(#Other("There was an error in modelCreationCanister.createCanister"));
+                        return createCanisterResult;
+                    };
                     case (#Ok(createCanisterSuccess)) {
                         // Create new entry for user
                         let modelCanisterInfo : Types.CanisterInfo = {
                             canisterType : Types.CanisterType = #Model;
                             creationTimestamp : Nat64 = Nat64.fromNat(Int.abs(Time.now()));
-                            canisterAddress : Text = createCanisterSuccess.newCanisterId;
+                            canisterAddress : Text = createCanisterSuccess.newCtlrbCanisterId;
                         };
                         let userEntry : Types.UserCreationEntry = {
                             selectedModel : Types.AvailableModels = defaultSelectedModel;
@@ -184,7 +189,7 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                                         let frontendCanisterInfo : Types.CanisterInfo = {
                                             canisterType : Types.CanisterType = #Frontend;
                                             creationTimestamp : Nat64 = Nat64.fromNat(Int.abs(Time.now()));
-                                            canisterAddress : Text = createCanisterSuccess.newCanisterId;
+                                            canisterAddress : Text = createCanisterSuccess.newCtlrbCanisterId;
                                         };
                                         let updatedUserEntry : Types.UserCreationEntry = {
                                             selectedModel : Types.AvailableModels = existingUserEntry.selectedModel;
@@ -199,14 +204,16 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                             };
                         };
                     };
-                    case _ { return #Err(#Unauthorized); }; // no entry yet
+                    case _ { return #Err(#Other("First create the corresponding model canister before the frontend")); }; // no entry yet
                 };
             };
-            case _ { return #Err(#Unauthorized); };
+            case _ { 
+                return #Err(#Other("CanisterType must be #Model or #Frontend"));
+            };
         };        
     };
 
-    public shared (msg) func getUserCanistersEntry() : async Types.UserCanistersEntryResult {
+    public query (msg) func getUserCanistersEntry() : async Types.UserCanistersEntryResult {
         if (Principal.isAnonymous(msg.caller)) {
             return #Err(#Unauthorized);
         };

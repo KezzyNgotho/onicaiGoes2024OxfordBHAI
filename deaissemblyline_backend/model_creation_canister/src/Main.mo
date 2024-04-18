@@ -17,10 +17,18 @@ import Cycles "mo:base/ExperimentalCycles";
 import Types "Types";
 import Utils "Utils";
 
-actor class ModelCreationCanister(_master_canister_id : Text) = this {
+actor class ModelCreationCanister() = this {
 
-    // TODO: This is not used, but removing it brakes deployment. Don't understand yet why...
-    let MASTER_CANISTER_ID : Text = _master_canister_id; // Corresponds to DeAIssembly Backend canister
+    stable var MASTER_CANISTER_ID : Text = ""; // Corresponds to DeAIssembly Backend canister
+
+    public shared (msg) func setMasterCanisterId(_master_canister_id : Text) : async Types.AuthRecordResult {
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+        MASTER_CANISTER_ID := _master_canister_id;
+        let authRecord = { auth = "You set the master canister for this canister." };
+        return #Ok(authRecord);
+    };
 
     // -------------------------------------------------------------------------------
     // Orthogonal Persisted Data storage
@@ -191,11 +199,10 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
 
     // Spin up a new canister with an AI model running in it as specified by the input parameters
     public shared (msg) func createCanister(configurationInput : Types.ModelConfiguration) : async Types.ModelCreationResult {
-        // Only backend canister may call this
-        // if (not Principal.isController(msg.caller) or Principal.equal(msg.caller, Principal.fromActor(this))) {
-        /* if (not Principal.isController(msg.caller)) {
+        // Only Controllers and the Master canister may call this
+        if (not (Principal.isController(msg.caller) or Principal.equal(msg.caller, Principal.fromText(MASTER_CANISTER_ID)))) {
             return #Err(#Unauthorized);
-        }; */
+        };
 
         switch (getModelCreationArtefacts(configurationInput.selectedModel)) {
             case (?creationArtefacts) {
@@ -335,9 +342,9 @@ actor class ModelCreationCanister(_master_canister_id : Text) = this {
     };
 
     public shared (msg) func testCreateCanister() : async Types.ModelCreationResult {
-        /* if (not Principal.isController(msg.caller)) {
+        if (not Principal.isController(msg.caller)) {
             return #Err(#Unauthorized);
-        }; */
+        };
         let config = {
             selectedModel : Types.AvailableModels = #Llama2_260K;
             owner : Principal = msg.caller;

@@ -16,10 +16,15 @@ mops install
 dfx generate
 
 # local
-dfx deploy model_creation_canister --argument '("bkyz2-fmaaa-aaaaa-qaaaq-cai")'
+dfx deploy model_creation_canister
 
 # IC mainnet
-dfx deploy --ic model_creation_canister --argument '("bkyz2-fmaaa-aaaaa-qaaaq-cai")'
+dfx deploy --ic model_creation_canister
+
+# Set DeAIssembly Backend as master canister (you have to deploy that canister first and then return with its id)
+dfx canister call model_creation_canister setMasterCanisterId '("bw4dl-smaaa-aaaaa-qaacq-cai")'
+
+dfx canister call --ic model_creation_canister setMasterCanisterId '("6ugvi-7aaaa-aaaai-acria-cai")'
 
 ```
 
@@ -31,7 +36,7 @@ Setup python environment:
 pip install -r requirements.txt
 ```
 
-Run upload script:
+Run upload script - local:
 
 ```bash
 # --------------------------------------------------------------------------
@@ -74,6 +79,14 @@ python -m scripts.upload --network local --canister model_creation_canister --mo
 # To upload the 15M model
 python -m scripts.upload --network local --canister model_creation_canister --model files/stories15Mtok4096.bin --tokenizer files/tok4096.bin --model_id Llama2_15M --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 
+```
+
+Run upload script - ic:
+
+```bash
+python -m scripts.upload --network ic --canister model_creation_canister --model files/stories260K.bin --tokenizer files/tok512.bin --model_id Llama2_260K --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
+
+python -m scripts.upload_control_canister --network ic --canister model_creation_canister --wasm files/ctrlb_canister.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 ```
 
 ### Test canister creation

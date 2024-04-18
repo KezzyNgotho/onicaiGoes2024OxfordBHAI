@@ -1,7 +1,7 @@
 {
   "version": 1,
   "canisters": {
-    "creation_canister": {
+    "frontend_creation_canister": {
       "main": "src/Main.mo"
     }
   },

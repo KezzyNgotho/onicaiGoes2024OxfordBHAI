@@ -18,6 +18,7 @@
   };
 
   async function sendMessage() {
+    console.log("Debug sendMessage ");
     if (!$store.isAuthed) {
       return;
     };
@@ -25,13 +26,16 @@
       showCreateModelFirstMessage = true;
     };
     messageGenerationInProgress = true;
+    console.log("Debug sendMessage newMessageText ", newMessageText);
     if(newMessageText.trim() !== '') {
       messages = [...messages, { sender: 'You', content: newMessageText.trim() }];
       const newPrompt = newMessageText.trim();
       newMessageText = '';
       try {
         messages = [...messages, { sender: 'Your AI', content: replyText }];
+        console.log("Debug sendMessage messages ", messages);
         let modelBackendCanister = await store.getActorForModelBackendCanister();
+        console.log("Debug sendMessage modelBackendCanister ", modelBackendCanister);
         let steps = BigInt(30);
         let temperature = 0.1;
         let topp = 0.9;
@@ -44,7 +48,14 @@
           topp,
         };
         const reply = await modelBackendCanister.Inference(promptInput);
-        messages = [...messages.slice(0, -1), { sender: 'Your AI', content: reply }]; 
+        console.log("Debug sendMessage reply ", reply);
+        // @ts-ignore
+        if (reply.Ok) {
+          // @ts-ignore
+          messages = [...messages.slice(0, -1), { sender: 'Your AI', content: reply.Ok.story }]; 
+        } else {
+          messages = [...messages, { sender: 'Your AI', content: "There was an error unfortunately. Please try again." }];
+        };
       } catch (error) {
         console.error("Error getting response from model: ", error);
         messages = [...messages, { sender: 'Your AI', content: "There was an error unfortunately. Please try again." }];
