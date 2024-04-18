@@ -11,13 +11,13 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
     {#if !$store.isAuthed}
       <div>
-        <p>Please note that you may only interact with your AI model if you log in (such that it knows it's you).</p>
+        <p>Please log in first. You may only interact with your AI model if you're logged in (such that it knows it's you).</p>
       </div>
     {:else if showCreateModelFirstMessage}
       <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
         Create Your AI First!</h1> 
       <div>
-        <p>Please first create your AI model on the previous step. Then, you can interact with it here.</p>
+        <p>Please first create your AI model on the previous step.</p>
       </div>
     {:else}
       <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
