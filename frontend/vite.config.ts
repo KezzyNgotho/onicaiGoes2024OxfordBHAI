@@ -70,9 +70,9 @@ const canisterDefinitions = Object.entries(canisterIds).reduce(
 
 // Setup for Progressive Web App
 const pwaManifest = {
-  short_name: "Bitcoin Donation App",
-  name: "Bitcoin Donation App",
-  description: "Donate bitcoin to worthwhile causes.",
+  short_name: "DeAIssembly",
+  name: "DeAIssembly Line",
+  description: "Create Your Own Decentralized Generative AI.",
   //display: "standalone",
   //scope: "/",
   //start_url: "/",
@@ -129,7 +129,7 @@ export default defineConfig({
       ...aliases,
     },
   },
-  publicDir: "./src/donation_frontend/assets",
+  publicDir: "./src/deaissemblyline_frontend/assets",
   server: {
     host: true,
     fs: {

@@ -1,3 +1,8 @@
+type WalletType = 
+ variant {
+   BTC;
+   CKBTC;
+ };
 type Utxo = 
  record {
    height: nat32;
@@ -17,6 +22,7 @@ type StudentInfo =
    name: text;
    schoolId: text;
    thumbnail: text;
+   wallets: vec RecipientWallet;
  };
 type SignUpFormInput = 
  record {
@@ -29,12 +35,18 @@ type SchoolInfo =
    id: text;
    name: text;
    thumbnail: text;
+   wallets: vec RecipientWallet;
  };
 type Satoshi = nat64;
 type RecipientsResult = 
  variant {
    Err: ApiError;
    Ok: RecipientOverviewsRecord;
+ };
+type RecipientWallet = 
+ record {
+   address: text;
+   walletType: WalletType;
  };
 type RecipientResult = 
  variant {
@@ -62,7 +74,11 @@ type Recipient =
    Student: StudentInfo;
  };
 type PaymentTypeRecord = record {paymentType: PaymentType;};
-type PaymentType = variant {BTC;};
+type PaymentType = 
+ variant {
+   BTC;
+   CKBTC;
+ };
 type PaymentTransactionId = text;
 type Page = vec nat8;
 type OutPoint = 

@@ -27,9 +27,9 @@
     "paths": { "canisters/*": [".dfx/local/canisters/*"] }
   },
   "include": [
-    "src/donation_frontend/**/*.d.ts",
-    "src/donation_frontend/**/*.ts",
-    "src/donation_frontend/**/*.js",
-    "src/donation_frontend/**/*.svelte"
+    "src/deaissemblyline_frontend/**/*.d.ts",
+    "src/deaissemblyline_frontend/**/*.ts",
+    "src/deaissemblyline_frontend/**/*.js",
+    "src/deaissemblyline_frontend/**/*.svelte"
   ]
 }

@@ -1,8 +1,8 @@
 {
-  "name": "donation_frontend",
+  "name": "deaissemblyline_frontend",
   "version": "0.1.0",
   "type": "module",
-  "description": "Internet Computer starter application",
+  "description": "Frontend for DeAIssembly Line - create own decentralized Generative AI solutions",
   "keywords": [
     "Internet Computer",
     "Motoko",

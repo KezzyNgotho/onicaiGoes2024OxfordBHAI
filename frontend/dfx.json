@@ -1,6 +1,6 @@
 {
   "canisters": {
-    "donation_frontend": {
+    "deaissemblyline_frontend": {
       "frontend": {
         "entrypoint": "dist/index.html"
       },
@@ -8,6 +8,22 @@
         "dist/"
       ],
       "type": "assets"
+    },
+    "aissembly_line_canister": {
+      "type": "custom",
+      "candid": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.did",
+      "wasm": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.wasm",
+      "remote": {
+        "candid": "../deaissemblyline_backend/aissembly_line_canister/.dfx/local/canisters/aissembly_line_canister/aissembly_line_canister.did",
+        "id": {
+          "ic": "fj5jn-2qaaa-aaaag-acmfq-cai"
+        }
+      }
+    },
+    "ctrlb_canister": {
+      "type": "custom",
+      "candid": "../deaissemblyline_backend/model_creation_canister/files/ctrlb_canister.did",
+      "wasm": "../deaissemblyline_backend/model_creation_canister/files/ctrlb_canister.wasm"
     },
     "donation_tracker_canister": {
       "type": "custom",

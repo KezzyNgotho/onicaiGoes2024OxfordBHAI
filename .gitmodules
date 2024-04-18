@@ -1,3 +1,6 @@
 [submodule "motoko-bitcoin"]
 	path = motoko-bitcoin
 	url = https://github.com/tgalal/motoko-bitcoin
+[submodule "backend/donation_canister/motoko-bitcoin"]
+	path = backend/donation_canister/motoko-bitcoin
+	url = https://github.com/tgalal/motoko-bitcoin.git

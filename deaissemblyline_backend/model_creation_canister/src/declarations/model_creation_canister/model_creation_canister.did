@@ -1,0 +1,69 @@
+type StatusCode = nat16;
+type ModelCreationResult = 
+ variant {
+   Err: ApiError;
+   Ok: ModelCreationRecord;
+ };
+type ModelCreationRecord = 
+ record {
+   creationResult: text;
+   newCtlrbCanisterId: text;
+   newLlmCanisterId: text;
+ };
+type ModelCreationCanister = 
+ service {
+   addModelCreationArtefactsEntry: (text, ModelCreationArtefacts) ->
+    (InsertArtefactsResult);
+   amiController: () -> (AuthRecordResult);
+   createCanister: (ModelConfiguration) -> (ModelCreationResult);
+   reset_control_canister_wasm: () -> (FileUploadResult);
+   reset_model_creation_artefacts: (text) -> (FileUploadResult);
+   testCreateCanister: () -> (ModelCreationResult);
+   upload_control_wasm_bytes_chunk: (vec nat8) -> (FileUploadResult);
+   upload_model_bytes_chunk: (text, vec nat8) -> (FileUploadResult);
+   upload_tokenizer_bytes_chunk: (text, vec nat8) -> (FileUploadResult);
+   upload_wasm_bytes_chunk: (text, vec nat8) -> (FileUploadResult);
+   whoami: () -> (principal);
+ };
+type ModelCreationArtefacts = 
+ record {
+   canisterWasm: vec nat8;
+   modelWeights: vec nat8;
+   tokenizer: vec nat8;
+ };
+type ModelConfiguration = 
+ record {
+   owner: principal;
+   selectedModel: AvailableModels;
+ };
+type InsertArtefactsResult = 
+ variant {
+   Err: ApiError;
+   Ok: ModelCreationArtefacts;
+ };
+type FileUploadResult = 
+ variant {
+   Err: ApiError;
+   Ok: FileUploadRecord;
+ };
+type FileUploadRecord = record {creationResult: text;};
+type AvailableModels = 
+ variant {
+   Llama2_15M;
+   Llama2_260K;
+ };
+type AuthRecordResult = 
+ variant {
+   Err: ApiError;
+   Ok: AuthRecord;
+ };
+type AuthRecord = record {auth: text;};
+type ApiError = 
+ variant {
+   InvalidId;
+   Other: text;
+   StatusCode: StatusCode;
+   Unauthorized;
+   ZeroAddress;
+ };
+service : (text) -> ModelCreationCanister

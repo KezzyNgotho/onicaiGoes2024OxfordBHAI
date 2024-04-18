@@ -1,0 +1,65 @@
+type UserCreationEntry = 
+ record {
+   frontendCanister: opt CanisterInfo;
+   modelCanister: CanisterInfo;
+   selectedModel: AvailableModels;
+ };
+type UserCanistersEntryResult = 
+ variant {
+   Err: ApiError;
+   Ok: UserCreationEntry;
+ };
+type ModelCreationResult = 
+ variant {
+   Err: ApiError;
+   Ok: ModelCreationRecord;
+ };
+type ModelCreationRecord = 
+ record {
+   creationResult: text;
+   newCanisterId: text;
+ };
+type CanisterType = 
+ variant {
+   Frontend;
+   Model;
+ };
+type CanisterInfo = 
+ record {
+   canisterAddress: text;
+   canisterType: CanisterType;
+   creationTimestamp: nat64;
+ };
+type CanisterConfiguration = 
+ record {
+   canisterType: CanisterType;
+   owner: opt principal;
+   selectedModel: opt AvailableModels;
+ };
+type AvailableModels = 
+ variant {
+   Llama2_15M;
+   Llama2_260K;
+ };
+type AuthRecordResult = 
+ variant {
+   Err: ApiError;
+   Ok: AuthRecord;
+ };
+type AuthRecord = record {auth: text;};
+type ApiError = 
+ variant {
+   InvalidId;
+   Other: text;
+   Unauthorized;
+   ZeroAddress;
+ };
+type AissemblyLineCanister = 
+ service {
+   amiController: () -> (AuthRecordResult);
+   createNewCanister: (CanisterConfiguration) -> (ModelCreationResult);
+   getUserCanistersEntry: () -> (UserCanistersEntryResult);
+   isControllerLogicOk: () -> (AuthRecordResult);
+   whoami: () -> (principal);
+ };
+service : (text, text) -> AissemblyLineCanister
