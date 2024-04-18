@@ -25,15 +25,16 @@
 
       <p class="mt-4 text-black dark:text-white font-semibold">Created model type: {$currentAiCreationObject.llm.selectedModel}</p>
       <p class="mt-2 text-black dark:text-white">Your AI model runs in a canister smart contract on the Internet Computer. This canister along with the AI is under your control and belongs to you.</p>
-      <p class="mt-4 text-black dark:text-white font-semibold">Your canister address on the Internet Computer: {$currentAiCreationObject.createdBackendCanisterId}</p>
+      <p class="mt-4 text-black dark:text-white font-semibold">Your AI model canister address on the Internet Computer: {$currentAiCreationObject.createdBackendCanisterId}</p>
 
       <p class="mt-2 text-black dark:text-white">Next up, you can interact with your AI model.</p>
       <p class="mt-2 text-black dark:text-white">For this, there's a chat interface on the next step.</p>
       <p class="mt-2 text-black dark:text-white">Each canister on the Internet Computer gets provided a user interface you can use by default (it's called Candid UI).</p>
-      <p class="mt-2 text-black dark:text-white">You can access your canister's Candid UI here:</p>
+      <p class="mt-2 text-black dark:text-white">You can view your AI model canister's Candid UI here:</p>
       <a href={candidUiUrl} target='_blank' rel="noreferrer" class='underline'>Open Candid UI in a new browser tab</a>
       <p class="mt-2 text-black dark:text-white">If you like, you can also interact from the command line with dfx (advanced):</p>
       <p class="mt-2 text-black dark:text-white">{dfxCommandString}</p>
+      <p class="mt-2 text-black dark:text-white">Please note that only your account on this dApp is allowed to interact with this AI model canister. When you logged in, a unique login credential was created for you and your AI model canister was linked to this credential (such that only you may use your AI). The credential is not the same as on other dApps. This way, you stay anonymous across different dApps.</p>
     {/if}
   </div> 
 </section>
