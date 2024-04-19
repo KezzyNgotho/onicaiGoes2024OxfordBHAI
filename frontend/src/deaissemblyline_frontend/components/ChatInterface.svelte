@@ -103,32 +103,32 @@
   };
 </script>
 
-<section id="chat-model-section" class="py-7 space-y-6 items-center text-center bg-slate-100">
+<section id="chat-model-section" class="py-7 space-y-6 items-center text-center bg-slate-100 dark:bg-slate-800">
   <h1 class="mb-4 text-xl font-bold tracking-tight leading-none text-gray-900 md:text-xl lg:text-xl dark:text-white">
     Your AI Assistant to Learn With</h1>
-  <h3>Discuss the United Nations' anti-corruption actions and any other topics you're interested in.</h3>
+  <h3 class="text-gray-500 dark:text-gray-200">Discuss the United Nations' anti-corruption actions and any other topics you're interested in.</h3>
   {#if chatModelDownloaded}
-    <h3 id='chatModelStatusSubtext'>Success! You can chat with your AI Assistant now.</h3>
+    <h3 id='chatModelStatusSubtext' class="text-gray-500 dark:text-gray-200">Success! You can chat with your AI Assistant now.</h3>
     <!-- <Button id="newChatButton"
         class="bg-slate-100 text-slate-900 hover:bg-slate-200 hover:text-slate-900"
         on:click={showNewChat}>New Chat</Button> -->
-    <p id="generate-label"> </p>
+    <p id="generate-label" class="text-gray-500 dark:text-gray-200"> </p>
     {#key $activeChatGlobal}  <!-- Element to rerender everything inside when activeChat changes (https://www.webtips.dev/force-rerender-components-in-svelte) -->
       <ChatBox modelCallbackFunction={getChatModelResponse} chatDisplayed={$activeChatGlobal} />
     {/key}
   {:else}
     {#if chatModelDownloadInProgress}
-      <h3 id='chatModelStatusSubtext'>Downloading AI Assistant. This may take a moment...</h3>
-      <p id="init-label"> </p>
+      <h3 id='chatModelStatusSubtext' class="text-gray-500 dark:text-gray-200">Downloading AI Assistant. This may take a moment...</h3>
+      <p id="init-label" class="text-gray-500 dark:text-gray-200"> </p>
     {:else}
-      <h3 id='chatModelStatusSubtext'>Let's first download the AI Assistant for you. Please click on the button:</h3>
+      <h3 id='chatModelStatusSubtext' class="text-gray-500 dark:text-gray-200">Let's first download the AI Assistant for you. Please click on the button:</h3>
       <Button id="downloadChatModelButton"
         class="bg-slate-100 text-slate-900 hover:bg-slate-200 hover:text-slate-900"
         on:click={loadChatModel}>Initialize</Button>
     {/if}
-    <p>Note: AI assistants are pretty huge and require quite some computational resources. 
+    <p class="text-gray-500 dark:text-gray-200">Note: AI assistants are pretty huge and require quite some computational resources. 
       As this AI assistant runs on your device (via the browser), whether and how fast it may run depend on the device's hardware. If a given model doesn't work, you can try a smaller one from the selection under Settings and see if the device can support it.</p>
-    <p>For the best possible experience, we recommend running as few other programs and browser tabs as possible besides this one as those can limit the computational resources available for the AI assistant.</p>
+    <p class="text-gray-500 dark:text-gray-200">For the best possible experience, we recommend running as few other programs and browser tabs as possible besides this one as those can limit the computational resources available for the AI assistant.</p>
   {/if}
   <!-- <p id="debug-label"> </p>  Debug -->
 </section>
