@@ -96,17 +96,17 @@
   onMount(loadChat); */
 </script>
 
-{#if !$store.isAuthed}
+<!-- {#if !$store.isAuthed}
   <div>
-    <p class="text-gray-500 dark:text-gray-200">Please note that you may only store chats (and access additional features) if you log in.</p>
+    <p class="text-gray-900 dark:text-gray-200">Please note that you may only store chats (and access additional features) if you log in.</p>
   </div>
 {:else}
   <div>
-    <p class="text-gray-500 dark:text-gray-200">Should your chat messages be stored?</p>
+    <p class="text-gray-900 dark:text-gray-200">Should your chat messages be stored?</p>
     <input type="checkbox" bind:checked={storeChatToggle} on:click={handleStoreChatToggle} />
     <span>{storeChatToggle ? 'YES' : 'NO'}</span>
   </div>
-{/if}
+{/if} -->
 
 <div class="chatbox">
   <div class="messages">

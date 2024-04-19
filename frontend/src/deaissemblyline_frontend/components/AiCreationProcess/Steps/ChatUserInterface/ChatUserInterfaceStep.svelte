@@ -18,7 +18,6 @@
   };
 
   async function sendMessage() {
-    console.log("Debug sendMessage ");
     if (!$store.isAuthed) {
       return;
     };
@@ -26,16 +25,13 @@
       showCreateModelFirstMessage = true;
     };
     messageGenerationInProgress = true;
-    console.log("Debug sendMessage newMessageText ", newMessageText);
     if(newMessageText.trim() !== '') {
       messages = [...messages, { sender: 'You', content: newMessageText.trim() }];
       const newPrompt = newMessageText.trim();
       newMessageText = '';
       try {
         messages = [...messages, { sender: 'Your AI', content: replyText }];
-        console.log("Debug sendMessage messages ", messages);
         let modelBackendCanister = await store.getActorForModelBackendCanister();
-        console.log("Debug sendMessage modelBackendCanister ", modelBackendCanister);
         let steps = BigInt(30);
         let temperature = 0.1;
         let topp = 0.9;
@@ -48,7 +44,6 @@
           topp,
         };
         const reply = await modelBackendCanister.Inference(promptInput);
-        console.log("Debug sendMessage reply ", reply);
         // @ts-ignore
         if (reply.Ok) {
           // @ts-ignore
@@ -91,7 +86,7 @@
       <div class="message-input">
         <input bind:value={newMessageText} placeholder="Type your message here..." />
         {#if messageGenerationInProgress}
-          <button disabled on:click={sendMessage}>Send</button>
+          <button disabled on:click={sendMessage} class="bg-slate-100 text-slate-900 hover:bg-slate-200 hover:text-slate-900 border-2 border-black dark:border-white">Send</button>
         {:else}
           <button on:click={sendMessage}>Send</button>
         {/if}

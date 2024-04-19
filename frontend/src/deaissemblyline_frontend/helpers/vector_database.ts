@@ -36,9 +36,18 @@ interface MemoryVector {
   metadata: Record<string, any>;
 };
 
+const vectorDbByTopic = {};
+let selectedTopic;
+
 // https://js.langchain.com/docs/modules/agents/tools/how_to/dynamic
 // https://github.com/langchain-ai/langchainjs/issues/1115
-export const getSearchVectorDbTool = () => {
+export const getSearchVectorDbTool = async (selectedTopicInput) => {
+  /* if (vectorDbByTopic[selectedTopic]) { // several in-browser vector dbs easily overwhelm the device's memory
+    // the vector database for this topic has been initialized already
+    return vectorDbByTopic[selectedTopic];
+  }; */
+  vectorStoreState = null;
+  selectedTopic = selectedTopicInput;
   const vectorDbSearchToolName = "search-vector-database";
   const vectorDbSearchToolDescription = "Limited data: Tool to find previously stored data in the local vector database. The input must be a text string representing the search query. Note that this local database is limited and that while the returned results are the closest matches to the search query in the local database they are not necessarily good enough to show to the user. Never make up any new entries.";
 
@@ -46,8 +55,6 @@ export const getSearchVectorDbTool = () => {
     name: vectorDbSearchToolName,
     description: vectorDbSearchToolDescription,
     func: async (toolInput: string) => {
-      console.log("Debug vectorDbSearchTool typeof toolInput ", typeof toolInput);
-      console.log("Debug vectorDbSearchTool typeof toolInput !== 'string' ", typeof toolInput !== 'string');
       if (toolInput === undefined || typeof toolInput !== 'string') {
         return "There is an input error. You must input a text string as search query for the data in the local vector database.";
       };
@@ -59,109 +66,61 @@ export const getSearchVectorDbTool = () => {
       return JSON.stringify(toolResponse);
     },
   });
-  generateEmbeddings();
+  await generateEmbeddings();
+  //vectorDbByTopic[selectedTopic] = vectorDbSearchTool; // add the initialized vector db for later retrieval
   return vectorDbSearchTool;
 }; 
 
 const generateEmbeddings = async () => {
-  console.log("Debug generateEmbeddings");
   try {
     const start = performance.now() / 1000;
 
-    const existingDataEntries = await getDataEntries();
+    const existingDataEntries = await getDataEntries(selectedTopic);
     providedDataEntries = existingDataEntries;
 
     const textsToEmbed = existingDataEntries.map(
       (dataEntry) => JSON.stringify(dataEntry)
     );
-    console.log("Debug generateEmbeddings textsToEmbed ", textsToEmbed);
 
     const metadata = existingDataEntries.map((dataEntry) => ({ id: dataEntry.id }));
-    console.log("Debug generateEmbeddings metadata ", metadata);
 
     //const embeddings = new OpenAIEmbeddings({ openAIApiKey: "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" });
     const embeddings = new TensorFlowEmbeddings();
-
-    console.log("Debug generateEmbeddings embeddings ", embeddings);
 
     vectorStoreState = await MemoryVectorStore.fromTexts(
       textsToEmbed,
       metadata,
       embeddings,
     );
-    /* const loader = new TextLoader("unconventionsagainstcorruptionpdf.pdf");
-    const loader = new TextLoader("../assets/test.txt");
-    const docs = await loader.load();
-    console.log("Debug generateEmbeddings docs ", docs);
-    vectorStoreState = await MemoryVectorStore.fromDocuments(
-      docs,
-      embeddings,
-    );
-    console.log("Debug generateEmbeddings vectorStoreState ", vectorStoreState);
-    const loader2 = new TextLoader("unpolicy_guide_full.pdf");
-    const docs2 = await loader2.load();
-    vectorStoreState.addDocuments(docs2); */
     vectorStore.set(vectorStoreState);
-    console.log("Debug generateEmbeddings vectorStoreState ", vectorStoreState);
-    console.log("Debug generateEmbeddings vectorStoreState.memoryVectors ", vectorStoreState.memoryVectors);
-    const memVecs = vectorStoreState.memoryVectors;
-    console.log("Debug generateEmbeddings memVecs ", memVecs);
-    // Store memoryVectors for user
-    try {
-      const storeMemoryVectorsResponse = await storeState.backendActor.store_user_chats_memory_vectors(memVecs);
-      console.log("Debug generateEmbeddings storeMemoryVectorsResponse ", storeMemoryVectorsResponse);
-    } catch (error) {
-      console.error("Error storing memory vectors: ", error);        
-    };
-    // Debug
-    let retrievedMemVecs = [];
-    try {
-      const getMemoryVectorsResponse = await storeState.backendActor.get_caller_memory_vectors();
-      console.log("Debug generateEmbeddings getMemoryVectorsResponse ", getMemoryVectorsResponse);
-      if (getMemoryVectorsResponse.Ok) {
-        retrievedMemVecs = getMemoryVectorsResponse.Ok;
-      };
-    } catch (error) {
-      console.error("Error retrieving memory vectors: ", error);        
-    };
-    //vectorStoreState.memoryVectors = retrievedMemVecs;
-    console.log("Debug generateEmbeddings vectorStoreState.memoryVectors after retrievedMemVecs ", vectorStoreState.memoryVectors);
 
-    const end = performance.now() / 1000; // Debug
-
-    console.log(`Debug: Took ${(end - start).toFixed(2)}s`)
+    const end = performance.now() / 1000;
+    console.log(`Debug: generateEmbeddings took ${(end - start).toFixed(2)}s`)
   } catch (error) {
-    console.error(error)
+    console.error("Error in generateEmbeddings: ", error)
   };
 };
 
 const searchEmbeddings = async (text: string) => {
-  console.log("Debug searchEmbeddings text ", text);
   try {
     if (!vectorStoreState) {
-      await generateEmbeddings();
+      return;
+      //await generateEmbeddings();
     };
 
     const searchResult = await vectorStoreState.similaritySearch(text, 1); // returns 1 entry
-    console.log("Debug searchEmbeddings searchResult ", searchResult);
 
-    /* results.forEach((r) => {
-      console.log(r.pageContent.match(/Title:(.*)/)?.[0]) // Use regex to extract the title from the result text
-    }); */
     const searchResultIds = searchResult.map((r) => r.metadata.id);
-    console.log("Debug searchEmbeddings searchResultIds ", searchResultIds);
     let results = providedDataEntries.filter((dataEntry) => searchResultIds.includes(dataEntry.id));
-    console.log("Debug searchEmbeddings results ", results);
     return results;
   } catch (error) {
-    console.error(error)
+    console.error("Error in searchEmbeddings: ", error);
   };
 };
 
-const getDataEntries = async () => {
-  console.log("Debug getDataEntries");
+const getDataEntries = async (selectedTopic) => {
   const dataEntries = [];
-  const knowledgePages : [] = await getResourceAsArray(1);
+  const knowledgePages : [] = await getResourceAsArray(selectedTopic);
   for (let index = 0; index < knowledgePages.length; index++) {
     const dataEntry = {
       id: index,

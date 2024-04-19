@@ -24,7 +24,6 @@
     if (!$store.isAuthed) {
       return;
     };
-    console.log("#######Debug createModel");
     // Create the model for the user in the backend
     modelCreationInProgress = true;
     // AIssembly Canister Integration
@@ -42,9 +41,7 @@
       owner: [],
     };
 
-    console.log("#######Debug createModel modelInput ", modelInput);
     const createModelResponse = await $store.aissemblyBackendActor.createNewCanister(modelInput);
-    console.log("#######Debug createModel createModelResponse ", createModelResponse);
     // @ts-ignore
     if (createModelResponse.Err) {
       modelCreationError = true;
@@ -61,7 +58,6 @@
   let userModelCanister;
 
   const loadExistingUserModel = async () => {
-    console.log("Debug loadExistingUserModel");
     if (!$store.isAuthed) {
       return;
     };
@@ -73,13 +69,10 @@
     } else {
       selectedModel = { 'Llama2_260K' : null }; // default model
     };
-    console.log("Debug loadExistingUserModel selectedModel", selectedModel);
     let modelInput = {
       modelSelection: selectedModel,
     };
-    console.log("Debug loadExistingUserModel modelInput", modelInput);
     const getUserModelResponse = await $store.aissemblyBackendActor.getUserCanistersEntry(modelInput);
-    console.log("Debug loadExistingUserModel getUserModelResponse ", getUserModelResponse);
     // @ts-ignore
     if (getUserModelResponse.Err) {
       userAlreadyHasModel = false;
@@ -87,8 +80,6 @@
       userAlreadyHasModel = true;
       // @ts-ignore
       userModelCanister = getUserModelResponse.Ok.modelCanister;
-      console.log("Debug loadExistingUserModel userModelCanister ", userModelCanister);
-      console.log("Debug loadExistingUserModel userModelCanister.canisterAddress ", userModelCanister.canisterAddress);
       createdModelCanisterId = userModelCanister.canisterAddress;
       $currentAiCreationObject.createdBackendCanisterId = createdModelCanisterId;
     };
