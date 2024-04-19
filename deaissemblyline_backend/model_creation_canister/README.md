@@ -18,12 +18,14 @@ dfx generate
 # local
 dfx deploy model_creation_canister
 
-# IC mainnet
+# IC mainnet (caution!)
 dfx deploy --ic model_creation_canister
 
 # Set DeAIssembly Backend as master canister (you have to deploy that canister first and then return with its id)
+# local
 dfx canister call model_creation_canister setMasterCanisterId '("bw4dl-smaaa-aaaaa-qaacq-cai")'
 
+# IC mainnet (caution!)
 dfx canister call --ic model_creation_canister setMasterCanisterId '("6ugvi-7aaaa-aaaai-acria-cai")'
 
 ```
@@ -79,14 +81,26 @@ python -m scripts.upload --network local --canister model_creation_canister --mo
 # To upload the 15M model
 python -m scripts.upload --network local --canister model_creation_canister --model files/stories15Mtok4096.bin --tokenizer files/tok4096.bin --model_id Llama2_15M --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 
+# Upload with smaller chunk size (0.5 MB, default is 1.9MB)
+python -m scripts.upload --network local --canister model_creation_canister --model files/stories15Mtok4096.bin --tokenizer files/tok4096.bin --model_id Llama2_15M --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did --chunksize 0.5
+
 ```
 
-Run upload script - ic:
+Run upload script - IC:
 
 ```bash
+## To IC
+# Upload the ctrlb_canister
+python -m scripts.upload_control_canister --network ic --canister model_creation_canister --wasm files/ctrlb_canister.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
+
+# To upload the small 260K model
 python -m scripts.upload --network ic --canister model_creation_canister --model files/stories260K.bin --tokenizer files/tok512.bin --model_id Llama2_260K --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
 
-python -m scripts.upload_control_canister --network ic --canister model_creation_canister --wasm files/ctrlb_canister.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
+# To upload the 15M model
+python -m scripts.upload --network ic --canister model_creation_canister --model files/stories15Mtok4096.bin --tokenizer files/tok4096.bin --model_id Llama2_15M --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did
+
+# Upload with smaller chunk size (0.5 MB, default is 1.9MB)
+python -m scripts.upload --network ic --canister model_creation_canister --model files/stories15Mtok4096.bin --tokenizer files/tok4096.bin --model_id Llama2_15M --wasm files/llama2.wasm --candid src/declarations/model_creation_canister/model_creation_canister.did --chunksize 0.5
 ```
 
 ### Test canister creation
@@ -107,6 +121,9 @@ dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai amiWhitelisted
 dfx canister call br5f7-7uaaa-aaaaa-qaaca-cai Inference '(record {prompt="Joe went swimming in the pool"; steps=30; temperature=0.1; topp=0.9; rng_seed=0;})'
 
 # ----be carefull with these START ---
+## See all models with existing artefacts
+dfx canister call model_creation_canister get_models_with_creation_artefacts
+
 ## In case the entry for a model has to be deleted (use with caution):
 dfx canister call model_creation_canister reset_model_creation_artefacts '("Llama2_260K")'
 

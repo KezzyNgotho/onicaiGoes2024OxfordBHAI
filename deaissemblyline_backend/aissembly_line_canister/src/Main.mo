@@ -322,6 +322,31 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
         };
     };
 
+// Admin functions
+// Use with caution!
+    public shared (msg) func deleteUserCanistersEntriesAdmin(user : Text) : async Bool {
+        if (Principal.isAnonymous(msg.caller)) {
+            return false;
+        };
+        if (not Principal.isController(msg.caller)) {
+            return false;
+        };
+
+        creationsByUser.delete(Principal.fromText(user));
+        return true;
+    };
+
+    public query (msg) func getAllUserCanistersEntriesAdmin() : async ?[(Principal, [Types.UserCreationEntry])] {
+        if (Principal.isAnonymous(msg.caller)) {
+            return null;
+        };
+        if (not Principal.isController(msg.caller)) {
+            return null;
+        };
+
+        return ?Iter.toArray(creationsByUser.entries());
+    };
+
 
     // -------------------------------------------------------------------------------
     // Canister upgrades
