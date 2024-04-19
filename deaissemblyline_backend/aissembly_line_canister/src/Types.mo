@@ -61,6 +61,10 @@ module Types {
         #Llama2_15M;
     };
 
+    public type AvailableModelsRecord = {
+        modelSelection: AvailableModels;
+    };
+
     public type ModelConfiguration = {
         selectedModel : AvailableModels;
         owner: Principal;

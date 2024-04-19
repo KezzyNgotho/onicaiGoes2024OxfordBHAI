@@ -35,8 +35,8 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
     // Orthogonal Persisted Data storage
 
     // Map each user Principal to a record with the info about the created canisters
-    private var creationsByUser = HashMap.HashMap<Principal, Types.UserCreationEntry>(0, Principal.equal, Principal.hash);
-    stable var creationsByUserStable : [(Principal, Types.UserCreationEntry)] = [];
+    private var creationsByUser = HashMap.HashMap<Principal, [Types.UserCreationEntry]>(0, Principal.equal, Principal.hash);
+    stable var creationsByUserStable : [(Principal, [Types.UserCreationEntry])] = [];
 
     // -------------------------------------------------------------------------------
     // Canister Endpoints
@@ -75,25 +75,37 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
         };
     };
 
-    private func verifyUserRequest(user : Principal, canisterType : Types.CanisterType) : Bool {
+    private func verifyUserRequest(user : Principal, canisterType : Types.CanisterType, modelType : Types.AvailableModels) : Bool {
         switch(canisterType) {
             case (#Model) {
                 // Verify that the user hasn't created any canisters yet (only one canister pair per user is allowed)
                 switch(creationsByUser.get(user)) {
-                    case (?existingUserEntry) { return false; }; // only one entry per user
+                    case (?existingUserEntries) {
+                        for (userEntry in existingUserEntries.vals()) {
+                            if (userEntry.selectedModel == modelType) {
+                                return false; // only one entry per model per user
+                            };
+                        };
+                        return true; // no entry for this model type yet
+                    };
                     case _ { return true; }; // no entry yet
                 };
             };
             case (#Frontend) {
                 // Verify that the user hasn't created a frontend canister yet (only one canister pair per user is allowed)
                 switch(creationsByUser.get(user)) {
-                    case (?existingUserEntry) {
-                        switch(existingUserEntry.frontendCanister) {
-                            case (?existingFrontendCanister) {
-                                return false; // only one frontend canister per user
+                    case (?existingUserEntries) {
+                        for (userEntry in existingUserEntries.vals()) {
+                            if (userEntry.selectedModel == modelType) {
+                                switch(userEntry.frontendCanister) {
+                                    case (?existingFrontendCanister) {
+                                        return false; // only one frontend canister per model per user
+                                    };
+                                    case _ { return true; }; // no frontend canister for this model and user yet
+                                };
                             };
-                            case _ { return true; }; // no frontend canister for this user yet
                         };
+                        return false; // Create model canister first
                     };
                     case _ { return false; }; // Create model canister first
                 };
@@ -102,21 +114,77 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
         };
     };
 
-    private func getCanisterInfo(user : Principal, canisterType : Types.CanisterType) : ?Types.CanisterInfo {
+    private func getCanisterInfo(user : Principal, canisterType : Types.CanisterType, modelType : Types.AvailableModels) : ?Types.CanisterInfo {
         switch(canisterType) {
             case (#Model) {
                 switch(creationsByUser.get(user)) {
-                    case (?existingUserEntry) { return ?existingUserEntry.modelCanister; };
-                    case _ { return null; }; // no entry yet
+                    case (?existingUserEntries) {
+                        for (userEntry in existingUserEntries.vals()) {
+                            if (userEntry.selectedModel == modelType) {
+                                return ?userEntry.modelCanister;
+                            };
+                        };
+                        return null; // no entry for the model type yet
+                    };
+                    case _ { return null; }; // no entries yet
                 };
             };
             case (#Frontend) {
                 switch(creationsByUser.get(user)) {
-                    case (?existingUserEntry) { return existingUserEntry.frontendCanister; };
-                    case _ { return null; }; // no entry yet
+                    case (?existingUserEntries) {
+                        for (userEntry in existingUserEntries.vals()) {
+                            if (userEntry.selectedModel == modelType) {
+                                return userEntry.frontendCanister;
+                            };
+                        };
+                        return null; // no entry for the model type yet
+                    };
+                    case _ { return null; }; // no entries yet
                 };
             };
             case _ { return null; }; // Invalid request
+        };
+    };
+
+    private func addUserEntry(user : Principal, newUserEntry : Types.UserCreationEntry) : Bool {
+        switch(creationsByUser.get(user)) {
+            case (?existingUserEntries) {
+                creationsByUser.put(user, Array.append<Types.UserCreationEntry>(existingUserEntries, [newUserEntry]));
+                return true;
+            };
+            case _ {
+                // no entries yet
+                creationsByUser.put(user, [newUserEntry]);
+                return true;
+            };
+        };
+    };
+
+    private func updateUserEntry(user : Principal, newUserEntry : Types.UserCreationEntry, modelType : Types.AvailableModels) : Bool {
+        switch(creationsByUser.get(user)) {
+            case (?existingUserEntries) {
+                var entryToUpdateFound = false;
+                var updatedUserEntries : [Types.UserCreationEntry] = [];
+                for (userEntry in existingUserEntries.vals()) {
+                    if (userEntry.selectedModel == modelType) {
+                        entryToUpdateFound := true;
+                        updatedUserEntries := Array.append<Types.UserCreationEntry>(updatedUserEntries, [newUserEntry]);
+                    } else {
+                        updatedUserEntries := Array.append<Types.UserCreationEntry>(updatedUserEntries, [userEntry]);
+                    };
+                };
+                switch(entryToUpdateFound) {
+                    case(false) { return false; };
+                    case(true) {
+                        creationsByUser.put(user, updatedUserEntries);
+                        return true;
+                    };
+                };
+            };
+            case _ {
+                // no entries yet
+                return false;
+            };
         };
     };
 
@@ -125,13 +193,19 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
             return #Err(#Unauthorized);
         };
 
-        let defaultSelectedModel = #Llama2_260K;
-        //let defaultSelectedModel = #Llama2_15M; TODO: no default but selectable by user
+        let defaultSelectedModel : Types.AvailableModels = #Llama2_260K;
+        var selectedModelType = defaultSelectedModel;
+        switch(configurationInput.selectedModel) {
+            case (?modelSelection) {
+                selectedModelType := modelSelection;
+            };
+            case _ { }; 
+        };
 
         switch(configurationInput.canisterType) {
             case (#Model) {
                 // Verify that the user hasn't created any canisters yet (only one canister pair per user is allowed)
-                let verifyUserRequestResult = verifyUserRequest(msg.caller, #Model);
+                let verifyUserRequestResult = verifyUserRequest(msg.caller, #Model, selectedModelType);
                 if (not verifyUserRequestResult) {
                     return #Err(#Other("Your request could not be verified. Please note that only one canister pair per user may be created."));
                     //return #Err(#Unauthorized);
@@ -144,7 +218,6 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                 
                 switch (createCanisterResult) {
                     case (#Err(createCanisterError)) {
-                        //return #Err(#Other("There was an error in modelCreationCanister.createCanister"));
                         return createCanisterResult;
                     };
                     case (#Ok(createCanisterSuccess)) {
@@ -159,18 +232,22 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                             modelCanister : Types.CanisterInfo = modelCanisterInfo;
                             frontendCanister : ?Types.CanisterInfo = null;
                         };
-                        creationsByUser.put(msg.caller, userEntry);
-                        return createCanisterResult;
+                        let addEntryResult = addUserEntry(msg.caller, userEntry);
+                        if (addEntryResult) {
+                            return createCanisterResult;
+                        } else {
+                            return #Err(#Other("There was an error adding the model entry for the user"));
+                        };                        
                     };
                 };
             };
             case (#Frontend) {
                 // Verify that the user hasn't created a frontend canister yet (only one canister pair per user is allowed)
-                let verifyUserRequestResult = verifyUserRequest(msg.caller, #Frontend);
+                let verifyUserRequestResult = verifyUserRequest(msg.caller, #Frontend, selectedModelType);
                 if (not verifyUserRequestResult) {
                     return #Err(#Unauthorized);
                 };
-                let userModelCanisterInfoResult : ?Types.CanisterInfo = getCanisterInfo(msg.caller, #Model);
+                let userModelCanisterInfoResult : ?Types.CanisterInfo = getCanisterInfo(msg.caller, #Model, selectedModelType);
                 switch(userModelCanisterInfoResult) {
                     case (?userModelCanisterInfo) {
                         let frontendCanisterConfiguration : Types.FrontendConfiguration = {
@@ -184,22 +261,36 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                             case (#Ok(createCanisterSuccess)) {
                                 // Update entry for user
                                 switch(creationsByUser.get(msg.caller)) {
-                                    case (?existingUserEntry) {
-                                        // update the user's existing entry with the frontend info
-                                        let frontendCanisterInfo : Types.CanisterInfo = {
-                                            canisterType : Types.CanisterType = #Frontend;
-                                            creationTimestamp : Nat64 = Nat64.fromNat(Int.abs(Time.now()));
-                                            canisterAddress : Text = createCanisterSuccess.newCtlrbCanisterId;
+                                    case (?existingUserEntries) {
+                                        var entryToUpdateFound = false;
+                                        for (userEntry in existingUserEntries.vals()) {
+                                            if (userEntry.selectedModel == selectedModelType) {
+                                                entryToUpdateFound := true;
+                                                // update the user's existing entry with the frontend info
+                                                let frontendCanisterInfo : Types.CanisterInfo = {
+                                                    canisterType : Types.CanisterType = #Frontend;
+                                                    creationTimestamp : Nat64 = Nat64.fromNat(Int.abs(Time.now()));
+                                                    canisterAddress : Text = createCanisterSuccess.newCtlrbCanisterId;
+                                                };
+                                                let updatedUserEntry : Types.UserCreationEntry = {
+                                                    selectedModel : Types.AvailableModels = userEntry.selectedModel;
+                                                    modelCanister : Types.CanisterInfo = userEntry.modelCanister;
+                                                    frontendCanister : ?Types.CanisterInfo = ?frontendCanisterInfo;
+                                                };
+                                                let updateEntryResult = updateUserEntry(msg.caller, updatedUserEntry, selectedModelType);
+                                                if (updateEntryResult) {
+                                                    return createCanisterResult;
+                                                } else {
+                                                    return #Err(#Other("There was an error updating the model entry for the user"));
+                                                };
+                                            };
                                         };
-                                        let updatedUserEntry : Types.UserCreationEntry = {
-                                            selectedModel : Types.AvailableModels = existingUserEntry.selectedModel;
-                                            modelCanister : Types.CanisterInfo = existingUserEntry.modelCanister;
-                                            frontendCanister : ?Types.CanisterInfo = ?frontendCanisterInfo;
+                                        switch(entryToUpdateFound) {
+                                            case(false) { return #Err(#Unauthorized); }; // no entry yet but it must exist already
+                                            case(true) { return createCanisterResult; };
                                         };
-                                        creationsByUser.put(msg.caller, updatedUserEntry);
-                                        return createCanisterResult;
                                     };
-                                    case _ { return #Err(#Unauthorized); }; // no entry yet but it must exist already
+                                    case _ { return #Err(#Unauthorized); }; // no entires yet but there must be at least one already
                                 };
                             };
                         };
@@ -213,14 +304,19 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
         };        
     };
 
-    public query (msg) func getUserCanistersEntry() : async Types.UserCanistersEntryResult {
+    public query (msg) func getUserCanistersEntry(modelInput : Types.AvailableModelsRecord) : async Types.UserCanistersEntryResult {
         if (Principal.isAnonymous(msg.caller)) {
             return #Err(#Unauthorized);
         };
 
         switch(creationsByUser.get(msg.caller)) {
-            case (?existingUserEntry) {
-                return #Ok(existingUserEntry);
+            case (?existingUserEntries) {
+                for (userEntry in existingUserEntries.vals()) {
+                    if (userEntry.selectedModel == modelInput.modelSelection) {
+                        return #Ok(userEntry);
+                    };
+                };
+                return #Err(#Other("No model of this type for the user yet."));
             };
             case _ { return #Err(#InvalidId); }; // no entry yet
         };

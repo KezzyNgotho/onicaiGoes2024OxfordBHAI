@@ -66,7 +66,17 @@
       return;
     };
     // DeAIssembly Canister Integration
-    const getUserModelResponse = await $store.aissemblyBackendActor.getUserCanistersEntry();
+    var selectedModel = [];
+    if ($currentAiCreationObject.llm.selectedModel === "#Llama2_15M") {
+      const llama215mSelectionValue = { 'Llama2_15M' : null };
+      selectedModel = [llama215mSelectionValue];
+    } else {
+      selectedModel = [{ 'Llama2_260K' : null }]; // default model
+    };
+    let modelInput = {
+      modelSelection: selectedModel,
+    };
+    const getUserModelResponse = await $store.aissemblyBackendActor.getUserCanistersEntry(modelInput);
     console.log("Debug loadExistingUserModel getUserModelResponse ", getUserModelResponse);
     // @ts-ignore
     if (getUserModelResponse.Err) {
