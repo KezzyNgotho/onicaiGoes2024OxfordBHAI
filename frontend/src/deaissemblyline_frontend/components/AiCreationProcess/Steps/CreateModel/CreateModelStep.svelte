@@ -66,16 +66,18 @@
       return;
     };
     // DeAIssembly Canister Integration
-    var selectedModel = [];
+    var selectedModel = {};
     if ($currentAiCreationObject.llm.selectedModel === "#Llama2_15M") {
       const llama215mSelectionValue = { 'Llama2_15M' : null };
-      selectedModel = [llama215mSelectionValue];
+      selectedModel = llama215mSelectionValue;
     } else {
-      selectedModel = [{ 'Llama2_260K' : null }]; // default model
+      selectedModel = { 'Llama2_260K' : null }; // default model
     };
+    console.log("Debug loadExistingUserModel selectedModel", selectedModel);
     let modelInput = {
       modelSelection: selectedModel,
     };
+    console.log("Debug loadExistingUserModel modelInput", modelInput);
     const getUserModelResponse = await $store.aissemblyBackendActor.getUserCanistersEntry(modelInput);
     console.log("Debug loadExistingUserModel getUserModelResponse ", getUserModelResponse);
     // @ts-ignore

@@ -211,7 +211,7 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                     //return #Err(#Unauthorized);
                 };
                 let modelCanisterConfiguration : Types.ModelConfiguration = {
-                    selectedModel : Types.AvailableModels = defaultSelectedModel;
+                    selectedModel : Types.AvailableModels = selectedModelType;
                     owner: Principal = msg.caller;
                 };
                 let createCanisterResult : Types.ModelCreationResult = await modelCreationCanister.createCanister(modelCanisterConfiguration);
@@ -228,7 +228,7 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                             canisterAddress : Text = createCanisterSuccess.newCtlrbCanisterId;
                         };
                         let userEntry : Types.UserCreationEntry = {
-                            selectedModel : Types.AvailableModels = defaultSelectedModel;
+                            selectedModel : Types.AvailableModels = selectedModelType;
                             modelCanister : Types.CanisterInfo = modelCanisterInfo;
                             frontendCanister : ?Types.CanisterInfo = null;
                         };
@@ -251,7 +251,7 @@ actor class AissemblyLineCanister(_model_creation_canister_id : Text, _frontend_
                 switch(userModelCanisterInfoResult) {
                     case (?userModelCanisterInfo) {
                         let frontendCanisterConfiguration : Types.FrontendConfiguration = {
-                            selectedModel : Types.AvailableModels = defaultSelectedModel;
+                            selectedModel : Types.AvailableModels = selectedModelType;
                             owner: Principal = msg.caller;
                             associatedModelCanisterId : Text = userModelCanisterInfo.canisterAddress;
                         };
