@@ -17,5 +17,11 @@
     </div>
 
     <AiModelOptions /> 
+
+    <div>
+      <p class="mt-2 text-black dark:text-white">All AI models you can select are open-source. This means they were published with full transparency and contributed to society as public goods.</p>
+      <p class="mt-2 text-black dark:text-white">The name of the AI model usually refers to the family of models it belongs to or to their original creators.</p>
+      <p class="mt-2 text-black dark:text-white">The number of parameters describes the size of the AI model. Each parameter's value gets set during the training process of the AI model. Together, the parameters determine the response the AI model generates to your prompts.</p>
+    </div>
   </div>  
 </section>

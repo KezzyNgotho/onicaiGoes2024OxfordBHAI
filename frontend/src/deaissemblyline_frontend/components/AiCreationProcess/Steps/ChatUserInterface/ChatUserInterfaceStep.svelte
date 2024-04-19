@@ -66,32 +66,40 @@
   };
 </script>
 
-{#if !$store.isAuthed}
-  <div>
-    <p>Please note that you may only interact with your AI model if you log in (such that it knows it's you).</p>
-  </div>
-{:else if showCreateModelFirstMessage}
-  <div>
-    <p>Please first create your AI model on the previous step. Then, you can interact with it here.</p>
-  </div>
-{:else}
-  <div class="chatbox">
-    <div class="messages">
-      {#each messages as message (message.content)}
-        <Message {message} />
-      {/each}
-    </div>
+<section class="bg-white dark:bg-gray-900 bg-[url('/images/hero-pattern.svg')]" >
+  <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
+    {#if !$store.isAuthed}
+      <div>
+        <p>Please log in first. You may only interact with your AI model if you're logged in (such that it knows it's you).</p>
+      </div>
+    {:else if showCreateModelFirstMessage}
+      <div>
+        <p>Please first create your AI model on the previous step. Then, you can interact with it here.</p>
+      </div>
+    {:else}
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+        Use Your Personal AI</h1>  
+      <p class="mb-2">Write a prompt to your AI below and it will generate a response for you.</p>
+      
+      <div class="chatbox">
+        <div class="messages">
+          {#each messages as message (message.content)}
+            <Message {message} />
+          {/each}
+        </div>
 
-    <div class="message-input">
-      <input bind:value={newMessageText} placeholder="Type your message here..." />
-      {#if messageGenerationInProgress}
-        <button disabled on:click={sendMessage}>Send</button>
-      {:else}
-        <button on:click={sendMessage}>Send</button>
-      {/if}
+      <div class="message-input">
+        <input bind:value={newMessageText} placeholder="Type your message here..." />
+        {#if messageGenerationInProgress}
+          <button disabled on:click={sendMessage}>Send</button>
+        {:else}
+          <button on:click={sendMessage}>Send</button>
+        {/if}
+      </div>
     </div>
+    {/if}
   </div>
-  {/if}
+</section>
 
 
 <style>
