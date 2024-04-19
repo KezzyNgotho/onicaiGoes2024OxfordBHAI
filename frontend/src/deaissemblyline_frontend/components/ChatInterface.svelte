@@ -73,18 +73,20 @@
   async function getChatModelResponse(prompt, progressCallback = generateProgressCallback) {
     checkAndCompleteTopic(prompt); // Check whether the prompt contributes to the user completing the current topic
 
-    let vectorDbSearchToolResponse = await vectorDbSearchTool.func(prompt);
-    vectorDbSearchToolResponse = JSON.parse(vectorDbSearchToolResponse);
-
     let additionalContentToProvide = "Additional official United Nations resources:";
-    for (let index = 0; index < vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length; index++) {
-      const additionalEntry = vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase[index];
-      additionalContentToProvide += "  ";
-      additionalContentToProvide += additionalEntry.content;  
+    if (vectorDbSearchTool) {
+      let vectorDbSearchToolResponse = await vectorDbSearchTool.func(prompt);
+      vectorDbSearchToolResponse = JSON.parse(vectorDbSearchToolResponse);
+
+      for (let index = 0; index < vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase.length; index++) {
+        const additionalEntry = vectorDbSearchToolResponse.existingChatsFoundInLocalDatabase[index];
+        additionalContentToProvide += "  ";
+        additionalContentToProvide += additionalEntry.content;  
+      };
     };
 
     // Compose the final prompt, focusing primarily on the user's query
-    let finalPrompt = "If highly relevant, you may also consider including: " + additionalContentToProvide;
+    let finalPrompt = "If highly relevant, you may also use: " + additionalContentToProvide;
     finalPrompt = "USER PROMPT: " + prompt + "\n" + finalPrompt;
 
     const reply = await $chatModelGlobal.generate(finalPrompt, progressCallback);
@@ -97,6 +99,7 @@
 
   async function changeTopic() {
     loadingKnowledgeDatabase = true;
+    vectorDbSearchTool = null;
     vectorDbSearchTool = await getSearchVectorDbTool(selectedTopic);
     loadingKnowledgeDatabase = false;
   };
