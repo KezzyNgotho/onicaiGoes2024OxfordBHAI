@@ -33,10 +33,16 @@ export interface ModelCreationCanister {
   >,
   'amiController' : ActorMethod<[], AuthRecordResult>,
   'createCanister' : ActorMethod<[ModelConfiguration], ModelCreationResult>,
+  'get_model_creation_artefacts' : ActorMethod<
+    [],
+    [] | [Array<[string, ModelCreationArtefacts]>]
+  >,
+  'get_models_with_creation_artefacts' : ActorMethod<[], [] | [Array<string>]>,
   'reset_control_canister_wasm' : ActorMethod<[], FileUploadResult>,
   'reset_model_creation_artefacts' : ActorMethod<[string], FileUploadResult>,
   'setMasterCanisterId' : ActorMethod<[string], AuthRecordResult>,
   'testCreateCanister' : ActorMethod<[], ModelCreationResult>,
+  'testCreateCanister15M' : ActorMethod<[], ModelCreationResult>,
   'upload_control_wasm_bytes_chunk' : ActorMethod<
     [Uint8Array | number[]],
     FileUploadResult

@@ -8,7 +8,10 @@ export interface AissemblyLineCanister {
     [CanisterConfiguration],
     ModelCreationResult
   >,
-  'getUserCanistersEntry' : ActorMethod<[], UserCanistersEntryResult>,
+  'getUserCanistersEntry' : ActorMethod<
+    [AvailableModelsRecord],
+    UserCanistersEntryResult
+  >,
   'isControllerLogicOk' : ActorMethod<[], AuthRecordResult>,
   'whoami' : ActorMethod<[], Principal>,
 }
@@ -21,6 +24,7 @@ export type AuthRecordResult = { 'Ok' : AuthRecord } |
   { 'Err' : ApiError };
 export type AvailableModels = { 'Llama2_260K' : null } |
   { 'Llama2_15M' : null };
+export interface AvailableModelsRecord { 'modelSelection' : AvailableModels }
 export interface CanisterConfiguration {
   'selectedModel' : [] | [AvailableModels],
   'canisterType' : CanisterType,

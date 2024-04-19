@@ -29,6 +29,9 @@ export const idlFactory = ({ IDL }) => {
     'Ok' : ModelCreationRecord,
     'Err' : ApiError,
   });
+  const AvailableModelsRecord = IDL.Record({
+    'modelSelection' : AvailableModels,
+  });
   const CanisterInfo = IDL.Record({
     'canisterType' : CanisterType,
     'creationTimestamp' : IDL.Nat64,
@@ -50,7 +53,11 @@ export const idlFactory = ({ IDL }) => {
         [ModelCreationResult],
         [],
       ),
-    'getUserCanistersEntry' : IDL.Func([], [UserCanistersEntryResult], []),
+    'getUserCanistersEntry' : IDL.Func(
+        [AvailableModelsRecord],
+        [UserCanistersEntryResult],
+        ['query'],
+      ),
     'isControllerLogicOk' : IDL.Func([], [AuthRecordResult], []),
     'whoami' : IDL.Func([], [IDL.Principal], []),
   });

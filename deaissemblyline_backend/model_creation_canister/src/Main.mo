@@ -175,28 +175,6 @@ actor class ModelCreationCanister() = this {
         return #Ok({ creationResult = "Success" });
     };
 
-    // Use with caution: Admin function to reset the control canister wasm
-    public shared (msg) func reset_control_canister_wasm() : async Types.FileUploadResult {
-        if (not Principal.isController(msg.caller)) {
-            return #Err(#Unauthorized);
-        };
-
-        controlCanisterWasm := [];
-
-        return #Ok({ creationResult = "Success" });
-    };
-
-    // Use with caution: Admin function to reset the creation artefacts for a model
-    public shared (msg) func reset_model_creation_artefacts(modelId : Text) : async Types.FileUploadResult {
-        if (not Principal.isController(msg.caller)) {
-            return #Err(#Unauthorized);
-        };
-
-        creationArtefactsByModel.delete(modelId);
-
-        return #Ok({ creationResult = "Success" });
-    };
-
     // Spin up a new canister with an AI model running in it as specified by the input parameters
     public shared (msg) func createCanister(configurationInput : Types.ModelConfiguration) : async Types.ModelCreationResult {
         // Only Controllers and the Master canister may call this
@@ -239,7 +217,6 @@ actor class ModelCreationCanister() = this {
                     nft_whitelist : (Types.NFTWhitelistRecord) -> async Types.StatusCodeRecordResult;
                 };
 
-                // TODO: chunk
                 // let chunkSize = 42000; // ~0.01 MB for testing on 260K model
                 let chunkSize = 9 * 1024 * 1024; // 9 MB
 
@@ -341,7 +318,11 @@ actor class ModelCreationCanister() = this {
         };
     };
 
+// Admin 
     public shared (msg) func testCreateCanister() : async Types.ModelCreationResult {
+        if (Principal.isAnonymous(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
         if (not Principal.isController(msg.caller)) {
             return #Err(#Unauthorized);
         };
@@ -352,10 +333,14 @@ actor class ModelCreationCanister() = this {
         let result = await createCanister(config);
         return result;
     };
+
     public shared (msg) func testCreateCanister15M() : async Types.ModelCreationResult {
-        /* if (not Principal.isController(msg.caller)) {
+        if (Principal.isAnonymous(msg.caller)) {
             return #Err(#Unauthorized);
-        }; */
+        };
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
         let config = {
             selectedModel : Types.AvailableModels = #Llama2_15M;
             owner : Principal = msg.caller;
@@ -363,6 +348,57 @@ actor class ModelCreationCanister() = this {
         let result = await createCanister(config);
         return result;
     };
+
+    // Use with caution: Admin function to reset the control canister wasm
+    public shared (msg) func reset_control_canister_wasm() : async Types.FileUploadResult {
+        if (Principal.isAnonymous(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        controlCanisterWasm := [];
+
+        return #Ok({ creationResult = "Success" });
+    };
+
+    // Use with caution: Admin function to reset the creation artefacts for a model
+    public shared (msg) func reset_model_creation_artefacts(modelId : Text) : async Types.FileUploadResult {
+        if (Principal.isAnonymous(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+        if (not Principal.isController(msg.caller)) {
+            return #Err(#Unauthorized);
+        };
+
+        creationArtefactsByModel.delete(modelId);
+
+        return #Ok({ creationResult = "Success" });
+    };
+
+    public query (msg) func get_model_creation_artefacts() : async ?[(Text, Types.ModelCreationArtefacts)] {
+        if (Principal.isAnonymous(msg.caller)) {
+            return null;
+        };
+        if (not Principal.isController(msg.caller)) {
+            return null;
+        };
+
+        return ?Iter.toArray(creationArtefactsByModel.entries());
+    };
+
+    public query (msg) func get_models_with_creation_artefacts() : async ?[Text] {
+        if (Principal.isAnonymous(msg.caller)) {
+            return null;
+        };
+        if (not Principal.isController(msg.caller)) {
+            return null;
+        };
+
+        return ?Iter.toArray(creationArtefactsByModel.keys());
+    };
+
     // -------------------------------------------------------------------------------
     // Canister upgrades
 

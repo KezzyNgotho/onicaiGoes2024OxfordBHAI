@@ -18,7 +18,6 @@
   };
 
   async function sendMessage() {
-    console.log("Debug sendMessage ");
     if (!$store.isAuthed) {
       return;
     };
@@ -26,16 +25,13 @@
       showCreateModelFirstMessage = true;
     };
     messageGenerationInProgress = true;
-    console.log("Debug sendMessage newMessageText ", newMessageText);
     if(newMessageText.trim() !== '') {
       messages = [...messages, { sender: 'You', content: newMessageText.trim() }];
       const newPrompt = newMessageText.trim();
       newMessageText = '';
       try {
         messages = [...messages, { sender: 'Your AI', content: replyText }];
-        console.log("Debug sendMessage messages ", messages);
         let modelBackendCanister = await store.getActorForModelBackendCanister();
-        console.log("Debug sendMessage modelBackendCanister ", modelBackendCanister);
         let steps = BigInt(30);
         let temperature = 0.1;
         let topp = 0.9;
@@ -48,7 +44,6 @@
           topp,
         };
         const reply = await modelBackendCanister.Inference(promptInput);
-        console.log("Debug sendMessage reply ", reply);
         // @ts-ignore
         if (reply.Ok) {
           // @ts-ignore
@@ -70,16 +65,16 @@
   <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
     {#if !$store.isAuthed}
       <div>
-        <p>Please log in first. You may only interact with your AI model if you're logged in (such that it knows it's you).</p>
+        <p class="mb-2 text-gray-900 dark:text-white">Please log in first. You may only interact with your AI model if you're logged in (such that it knows it's you).</p>
       </div>
     {:else if showCreateModelFirstMessage}
       <div>
-        <p>Please first create your AI model on the previous step. Then, you can interact with it here.</p>
+        <p class="mb-2 text-gray-900 dark:text-white">Please first create your AI model on the previous step. Then, you can interact with it here.</p>
       </div>
     {:else}
       <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
         Use Your Personal AI</h1>  
-      <p class="mb-2">Write a prompt to your AI below and it will generate a response for you.</p>
+      <p class="mb-2 text-gray-900 dark:text-white">Write a prompt to your AI below and it will generate a response for you.</p>
       
       <div class="chatbox">
         <div class="messages">
@@ -91,7 +86,7 @@
       <div class="message-input">
         <input bind:value={newMessageText} placeholder="Type your message here..." />
         {#if messageGenerationInProgress}
-          <button disabled on:click={sendMessage}>Send</button>
+          <button disabled on:click={sendMessage} class="bg-slate-100 text-slate-900 hover:bg-slate-200 hover:text-slate-900 border-2 border-black dark:border-white">Send</button>
         {:else}
           <button on:click={sendMessage}>Send</button>
         {/if}

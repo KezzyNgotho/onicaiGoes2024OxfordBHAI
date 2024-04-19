@@ -37,6 +37,7 @@ type CanisterConfiguration =
    owner: opt principal;
    selectedModel: opt AvailableModels;
  };
+type AvailableModelsRecord = record {modelSelection: AvailableModels;};
 type AvailableModels = 
  variant {
    Llama2_15M;
@@ -59,7 +60,8 @@ type AissemblyLineCanister =
  service {
    amiController: () -> (AuthRecordResult);
    createNewCanister: (CanisterConfiguration) -> (ModelCreationResult);
-   getUserCanistersEntry: () -> (UserCanistersEntryResult);
+   getUserCanistersEntry: (AvailableModelsRecord) ->
+    (UserCanistersEntryResult) query;
    isControllerLogicOk: () -> (AuthRecordResult);
    whoami: () -> (principal);
  };

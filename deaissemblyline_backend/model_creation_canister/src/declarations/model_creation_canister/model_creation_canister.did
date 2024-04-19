@@ -16,10 +16,17 @@ type ModelCreationCanister =
     (InsertArtefactsResult);
    amiController: () -> (AuthRecordResult);
    createCanister: (ModelConfiguration) -> (ModelCreationResult);
+   get_model_creation_artefacts: () ->
+    (opt vec record {
+               text;
+               ModelCreationArtefacts;
+             }) query;
+   get_models_with_creation_artefacts: () -> (opt vec text) query;
    reset_control_canister_wasm: () -> (FileUploadResult);
    reset_model_creation_artefacts: (text) -> (FileUploadResult);
    setMasterCanisterId: (text) -> (AuthRecordResult);
    testCreateCanister: () -> (ModelCreationResult);
+   testCreateCanister15M: () -> (ModelCreationResult);
    upload_control_wasm_bytes_chunk: (vec nat8) -> (FileUploadResult);
    upload_model_bytes_chunk: (text, vec nat8) -> (FileUploadResult);
    upload_tokenizer_bytes_chunk: (text, vec nat8) -> (FileUploadResult);

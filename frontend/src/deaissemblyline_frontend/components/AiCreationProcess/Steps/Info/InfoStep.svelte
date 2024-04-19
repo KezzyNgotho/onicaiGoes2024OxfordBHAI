@@ -14,7 +14,7 @@
     <p class="mt-2 text-black dark:text-white">And what's more, it belongs to you! It's running in an Internet Computer canister which is under your control and it thus is your personal AI.</p>
 
     <p class="mt-2 text-black dark:text-white">For an example of such an on-chain LLM (actually the first one ever), check out ICGPT if you like:</p>
-    <a href='https://icgpt.icpp.world/' target='_blank' rel="noreferrer" class='underline'>Open ICGPT in a new browser tab</a>
+    <a href='https://icgpt.icpp.world/' target='_blank' rel="noreferrer" class='underline mt-2 text-black dark:text-white'>Open ICGPT in a new browser tab</a>
 
   </div>  
 </section>

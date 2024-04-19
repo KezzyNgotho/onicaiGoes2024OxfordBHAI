@@ -88,7 +88,7 @@ export let supportedAiModelTypes = writable(
 
 // Variables for AI chat
 // User's device and browser information
-export const webGpuSupportedBrowsers = "Google Chrome, Mircosoft Edge";
+export const webGpuSupportedBrowsers = "Google Chrome, Microsoft Edge, Brave";
 const uaParser = new UAParser();
 const result = uaParser.getResult();
 export const device = result.device.model || 'Unknown Device';

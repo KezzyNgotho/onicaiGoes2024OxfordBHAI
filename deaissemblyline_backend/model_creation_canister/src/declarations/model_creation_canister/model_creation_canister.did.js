@@ -52,6 +52,16 @@ export const idlFactory = ({ IDL }) => {
         [ModelCreationResult],
         [],
       ),
+    'get_model_creation_artefacts' : IDL.Func(
+        [],
+        [IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, ModelCreationArtefacts)))],
+        ['query'],
+      ),
+    'get_models_with_creation_artefacts' : IDL.Func(
+        [],
+        [IDL.Opt(IDL.Vec(IDL.Text))],
+        ['query'],
+      ),
     'reset_control_canister_wasm' : IDL.Func([], [FileUploadResult], []),
     'reset_model_creation_artefacts' : IDL.Func(
         [IDL.Text],
@@ -60,6 +70,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     'setMasterCanisterId' : IDL.Func([IDL.Text], [AuthRecordResult], []),
     'testCreateCanister' : IDL.Func([], [ModelCreationResult], []),
+    'testCreateCanister15M' : IDL.Func([], [ModelCreationResult], []),
     'upload_control_wasm_bytes_chunk' : IDL.Func(
         [IDL.Vec(IDL.Nat8)],
         [FileUploadResult],
